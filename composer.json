@@ -19,6 +19,8 @@
     "homepage": "https://sprintf.ru",
     "require": {
         "php": "^8.1",
+        "symfony/http-kernel": "^7.0",
+        "symfony/dependency-injection": "^7.0",
         "symfony/flex": "*"
     },
     "require-dev": {
