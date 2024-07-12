@@ -1,0 +1,42 @@
+{
+    "name": "sprintf/wolfflow-bundle",
+    "description": "Symfony WolffloW Bundle by Sprint-F.RU",
+    "license": "BSD-3-Clause",
+    "type": "symfony-bundle",
+    "keywords": [
+        "WolffloW",
+        "Workflow",
+        "Actor",
+        "CQRS",
+        "Event Sourcing"
+    ],
+    "authors": [
+        {
+            "name": "Albert Stepantsev",
+            "email": "albert.stepantsev@sprintf.ru"
+        }
+    ],
+    "homepage": "https://sprintf.ru",
+    "require": {
+        "php": "^8.1",
+        "symfony/flex": "*"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.26"
+    },
+    "conflict": {
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "SprintF\\Bundle\\WolffLoW\\": "src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/flex": true
+        },
+        "sort-packages": true
+    }
+}
