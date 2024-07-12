@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 class ActionCollection
 {
     public function __construct(
-        #[TaggedIterator('wolfflow.action')]
+        #[TaggedIterator('workflow.action')]
         private readonly iterable $actions
     ) {
     }

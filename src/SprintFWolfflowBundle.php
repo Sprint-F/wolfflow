@@ -19,9 +19,9 @@ class SprintFWolfflowBundle extends AbstractBundle
     {
         $container->import('../config/services.yaml');
 
-        /* Добавляем тег wolfflow.action ко всем сервисам, помеченным атрибутом #[AsAction] */
+        /* Добавляем тег workflow.action ко всем сервисам, помеченным атрибутом #[AsAction] */
         $builder->registerAttributeForAutoconfiguration(AsAction::class, static function (ChildDefinition $definition, AsAction $attribute, \ReflectionClass $reflector): void {
-            $definition->addTag('wolfflow.action');
+            $definition->addTag('workflow.action', ['workflow' => $attribute->workflow]);
         });
     }
 }
