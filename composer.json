@@ -32,7 +32,7 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "SprintF\\Bundle\\WolffLow\\": "src/"
+            "SprintF\\Bundle\\Wolfflow\\": "src/"
         }
     },
     "config": {
