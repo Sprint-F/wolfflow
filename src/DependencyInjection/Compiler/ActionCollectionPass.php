@@ -9,19 +9,23 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ActionCollectionPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $containerBuilder): void
+    /**
+     * Всё это сделано, чтобы иметь возможность в сервисе ActionCollection
+     * получить сервисы действий бизнес-процессов, сгруппированными по бизнес-процессам.
+     */
+    public function process(ContainerBuilder $container): void
     {
-        if (!$containerBuilder->has(ActionCollection::class)) {
+        if (!$container->has(ActionCollection::class)) {
             return;
         }
 
-        $definition = $containerBuilder->findDefinition(ActionCollection::class);
+        $definition = $container->findDefinition(ActionCollection::class);
 
-        $taggedServices = $containerBuilder->findTaggedServiceIds('workflow.action');
+        $taggedServices = $container->findTaggedServiceIds('workflow.action');
 
         foreach ($taggedServices as $id => $tags) {
             foreach ($tags as $attributes) {
-                $definition->addMethodCall('addActionToWorflow', [
+                $definition->addMethodCall('addActionToWorkflow', [
                     new Reference($id),
                     $attributes['workflow'],
                 ]);
