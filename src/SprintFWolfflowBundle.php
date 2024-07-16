@@ -3,6 +3,7 @@
 namespace SprintF\Bundle\Wolfflow;
 
 use SprintF\Bundle\Wolfflow\Attribute\AsAction;
+use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\ActionCollectionPass;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -13,6 +14,12 @@ class SprintFWolfflowBundle extends AbstractBundle
     public function getPath(): string
     {
         return dirname(__DIR__);
+    }
+
+    public function build(ContainerBuilder $container): void
+    {
+        $container->addCompilerPass(new ActionCollectionPass());
+        parent::build($container);
     }
 
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
