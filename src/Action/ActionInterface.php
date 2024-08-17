@@ -13,6 +13,12 @@ use SprintF\Bundle\Wolfflow\Exception\FailException;
 interface ActionInterface
 {
     /**
+     * Метод, возвращающий имя бизнес-процесса, которому принадлежит данное действие.
+     * По умолчанию метод должен возвращать значение свойства атрибута AsAction::workflow.
+     */
+    public static function getDefaultWorkflowName(): string;
+
+    /**
      * Объект бизнес-процесса, которому принадлежит действие.
      */
     public static function getWorkflow()/* :WorkflowInterface */;

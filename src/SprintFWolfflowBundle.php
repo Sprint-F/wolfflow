@@ -2,8 +2,11 @@
 
 namespace SprintF\Bundle\Wolfflow;
 
+use SprintF\Bundle\Wolfflow\Action\ActionInterface;
 use SprintF\Bundle\Wolfflow\Attribute\AsAction;
+use SprintF\Bundle\Wolfflow\Attribute\AsWorkflow;
 use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\ActionCollectionPass;
+use SprintF\Bundle\Wolfflow\Workflow\WorkflowInterface;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -26,9 +29,18 @@ class SprintFWolfflowBundle extends AbstractBundle
     {
         $container->import('../config/services.yaml');
 
-        /* Добавляем тег workflow.action ко всем сервисам, помеченным атрибутом #[AsAction] */
+        /* Добавляем тег workflow.workflow ко всем сервисам, помеченным атрибутом #[AsWorkflow] и реализующим интерфейс WorkflowInterface */
+        $builder->registerAttributeForAutoconfiguration(AsWorkflow::class, static function (ChildDefinition $definition, AsWorkflow $attribute, \ReflectionClass $reflector): void {
+            if ($reflector->implementsInterface(WorkflowInterface::class)) {
+                $definition->addTag('workflow.workflow', ['name' => $attribute->name]);
+            }
+        });
+
+        /* Добавляем тег workflow.action ко всем сервисам, помеченным атрибутом #[AsAction] и реализующим интерфейс ActionInterface */
         $builder->registerAttributeForAutoconfiguration(AsAction::class, static function (ChildDefinition $definition, AsAction $attribute, \ReflectionClass $reflector): void {
-            $definition->addTag('workflow.action', ['workflow' => $attribute->workflow]);
+            if ($reflector->implementsInterface(ActionInterface::class)) {
+                $definition->addTag('workflow.action', ['workflow' => $attribute->workflow]);
+            }
         });
     }
 }

@@ -10,8 +10,8 @@ use Symfony\Component\DependencyInjection\Reference;
 class ActionCollectionPass implements CompilerPassInterface
 {
     /**
-     * Всё это сделано, чтобы иметь возможность в сервисе ActionCollection
-     * получить сервисы действий бизнес-процессов, сгруппированными по бизнес-процессам.
+     * Всё это сделано, чтобы иметь возможность в разных сервисах
+     * получать колллекции сервисов действий бизнес-процессов.
      */
     public function process(ContainerBuilder $container): void
     {
@@ -19,8 +19,16 @@ class ActionCollectionPass implements CompilerPassInterface
             return;
         }
 
+        /* Работаем с сервисами бизнес-процессов */
+        foreach ($container->findTaggedServiceIds('workflow.workflow') as $id => $tags) {
+            $container->findDefinition($id)->addMethodCall('setActions', [
+                new Reference(ActionCollection::class),
+            ]);
+        }
+
         $definition = $container->findDefinition(ActionCollection::class);
 
+        /** @var array $taggedServices Список всех сервисов с тегом workflow.action - это все действия всех бизнес-процессов */
         $taggedServices = $container->findTaggedServiceIds('workflow.action');
 
         foreach ($taggedServices as $id => $tags) {

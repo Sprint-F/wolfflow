@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="ru" datatype="plaintext" original="none">
+        <body>
+            <trans-unit id="workflow.entity.isnotsameasaction">
+                <source>workflow.entity.isnotsameasaction</source>
+                <target>Бизнес-процесс сущности не совпадает с бизнес-процессом действия</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

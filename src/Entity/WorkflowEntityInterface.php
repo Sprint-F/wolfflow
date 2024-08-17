@@ -32,4 +32,10 @@ interface WorkflowEntityInterface
      * когда Doctrine присваивает идентификатор записи, которая, по факту, не была сохранена...
      */
     public function setEntityId(int|string|null $id);
+
+    /**
+     * Метод, отвечающий на вопрос "Является ли сущность новой"?
+     * Новой считаем сущность, которая еще не сохранена в хранилище.
+     */
+    public function isNew(): bool;
 }

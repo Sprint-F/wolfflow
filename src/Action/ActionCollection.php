@@ -5,11 +5,11 @@ namespace SprintF\Bundle\Wolfflow\Action;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 
 /**
- * Сервис, позволяющий работать с коллекциями действий бизнес-процессов
+ * Сервис, позволяющий работать с коллекциями действий бизнес-процессов.
  */
 class ActionCollection
 {
-    private array $actionsByWorkflow;
+    private array $actionsByWorkflow = [];
 
     public function __construct(
         #[TaggedIterator('workflow.action')]
@@ -25,11 +25,9 @@ class ActionCollection
         return $this->allActions;
     }
 
-    final public function addActionToWorkflow(ActionInterface $action, string $workflow): self
+    final public function addActionToWorkflow(ActionInterface $action, string $workflow): void
     {
         $this->actionsByWorkflow[$workflow][] = $action;
-
-        return $this;
     }
 
     /**
