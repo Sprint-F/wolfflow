@@ -9,7 +9,7 @@ namespace SprintF\Bundle\Wolfflow\Attribute;
 class AsWorkflow
 {
     public function __construct(
-        /** Собственное имя бизнес-процесса */
+        /** Символьное имя бизнес-процесса */
         public string $name,
     ) {
     }

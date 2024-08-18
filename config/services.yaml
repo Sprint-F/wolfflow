@@ -8,6 +8,9 @@ services:
     resource: '../src/'
     exclude:
       - '../src/DependencyInjection/'
-      - '../src/Entity/'
+
+  SprintF\Bundle\Wolfflow\Action\ActionAbstract:
+    properties:
+      workflows: SprintF\Bundle\Wolfflow\Workflow\WorkflowCollection
 
 parameters:

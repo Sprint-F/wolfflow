@@ -7,6 +7,9 @@ use SprintF\Bundle\Wolfflow\Context\ContextInterface;
 use SprintF\Bundle\Wolfflow\Entity\WorkflowEntityInterface;
 use SprintF\Bundle\Wolfflow\Exception\CanNotException;
 use SprintF\Bundle\Wolfflow\Exception\NoNeededAttributeException;
+use SprintF\Bundle\Wolfflow\Workflow\WorkflowCollection;
+use SprintF\Bundle\Wolfflow\Workflow\WorkflowInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 use function Symfony\Component\Translation\t;
 
@@ -17,20 +20,38 @@ use function Symfony\Component\Translation\t;
  */
 abstract class ActionAbstract implements ActionInterface
 {
-    protected WorkflowEntityInterface $entity;
+    /**
+     * Используется в Dependency Injection. Именно поэтому public.
+     * К сожалению, атрибут здесь не несет никакой функции и указан лишь для наглядности...
+     */
+    #[Required]
+    public WorkflowCollection $workflows;
 
-    protected ContextInterface $context;
+    /**
+     * Сущность, над которой будет производиться дейтсвие.
+     */
+    protected readonly WorkflowEntityInterface $entity;
 
-    public static function getDefaultWorkflowName(): string
+    /**
+     * Контекст действия.
+     */
+    protected readonly ContextInterface $context;
+
+    public function getDefaultWorkflowName(): string
     {
         $asActionAttributes = (new \ReflectionClass(static::class))->getAttributes(AsAction::class);
 
         return !empty($asActionAttributes) ? $asActionAttributes[0]->newInstance()->workflow : throw new NoNeededAttributeException();
     }
 
+    public function getWorkflow(): WorkflowInterface
+    {
+        return $this->workflows->findByName($this::getDefaultWorkflowName());
+    }
+
     public function setEntity(WorkflowEntityInterface $entity): static
     {
-        if ($this->getWorkflow() !== $entity->getWorkflow()) {
+        if ($this->getWorkflow() !== $this->workflows->findByEntity($entity)) {
             throw new CanNotException(t('workflow.entity.isnotsameasaction'));
         }
 

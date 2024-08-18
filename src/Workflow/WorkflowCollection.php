@@ -2,6 +2,7 @@
 
 namespace SprintF\Bundle\Wolfflow\Workflow;
 
+use SprintF\Bundle\Wolfflow\Entity\WorkflowEntityInterface;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 
 /**
@@ -41,5 +42,13 @@ class WorkflowCollection
     public function findByName(string $name): ?WorkflowInterface
     {
         return $this->workflowsByName[$name] ?? null;
+    }
+
+    /**
+     * Метод получения объекта бизнес-процесса для конкретной сущности.
+     */
+    public function findByEntity(WorkflowEntityInterface $entity)
+    {
+        return $this->workflowsByName[$entity->getDefaultWorkflowName()] ?? null;
     }
 }

@@ -3,7 +3,6 @@
 namespace SprintF\Bundle\Wolfflow\Entity;
 
 // use SprintF\Bundle\Workflow\ActionLog\ActionLogEntryInterface;
-// use SprintF\Bundle\Workflow\Workflow\WorkflowInterface;
 
 /**
  * Общий объект для всех сущностей всех бизнес-процессов.
@@ -11,9 +10,10 @@ namespace SprintF\Bundle\Wolfflow\Entity;
 interface WorkflowEntityInterface
 {
     /**
-     * Объект бизнес-процесса, которому принадлежит сущность.
+     * Метод, возвращающий символьное имя бизнес-процесса, которому принадлежит данное сущность.
+     * По умолчанию метод должен возвращать значение свойства атрибута WorkflowEntity::workflow.
      */
-    public static function getWorkflow()/* :WorkflowInterface */;
+    public function getDefaultWorkflowName(): string;
 
     /**
      * Имя класса сущности. Почти всегда это будет именно класс в смысле PHP-класса.
@@ -30,8 +30,10 @@ interface WorkflowEntityInterface
     /**
      * Вообще говоря, этот метод не нужен. Но он требуется нам для фикса поведения сущностей Doctrine в отдельных случаях,
      * когда Doctrine присваивает идентификатор записи, которая, по факту, не была сохранена...
+     *
+     * @return $this
      */
-    public function setEntityId(int|string|null $id);
+    public function setEntityId(int|string|null $id): static;
 
     /**
      * Метод, отвечающий на вопрос "Является ли сущность новой"?

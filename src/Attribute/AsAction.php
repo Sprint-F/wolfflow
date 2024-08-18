@@ -9,8 +9,9 @@ namespace SprintF\Bundle\Wolfflow\Attribute;
 class AsAction
 {
     public function __construct(
-        /** Идентификатор бизнес-процесса, которому принадлежит действие */
+        /** Символьное имя бизнес-процесса, которому принадлежит действие */
         public string $workflow,
+
         /** Собственное имя действия */
         public ?string $name = null,
     ) {
