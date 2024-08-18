@@ -28,11 +28,11 @@ class ActionCollection
     /**
      * Метод получения списка всех действий всех бизнес-процессов.
      *
-     * @return iterable|ActionInterface[]
+     * @return array|ActionInterface[]
      */
-    public function all(): iterable
+    public function all(): array
     {
-        return $this->allActions;
+        return iterator_to_array($this->allActions);
     }
 
     /**

@@ -28,11 +28,11 @@ class WorkflowCollection
     /**
      * Метод получения списка всех бизнес-процессов.
      *
-     * @return iterable|WorkflowInterface[]
+     * @return array|WorkflowInterface[]
      */
-    public function all(): iterable
+    public function all(): array
     {
-        return $this->allWorkflows;
+        return iterator_to_array($this->allWorkflows);
     }
 
     /**
