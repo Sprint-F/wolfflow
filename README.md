@@ -1,2 +1,2 @@
-# wolfflow
-WolffloW bundle
+# Wolfflow
+Wolfflow bundle

@@ -6,6 +6,7 @@ use SprintF\Bundle\Wolfflow\Action\ActionInterface;
 use SprintF\Bundle\Wolfflow\Attribute\AsAction;
 use SprintF\Bundle\Wolfflow\Attribute\AsWorkflow;
 use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\ActionCollectionPass;
+use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\WorkflowCollectionPass;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowInterface;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -21,6 +22,7 @@ class SprintFWolfflowBundle extends AbstractBundle
 
     public function build(ContainerBuilder $container): void
     {
+        $container->addCompilerPass(new WorkflowCollectionPass());
         $container->addCompilerPass(new ActionCollectionPass());
         parent::build($container);
     }

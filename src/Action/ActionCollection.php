@@ -5,7 +5,7 @@ namespace SprintF\Bundle\Wolfflow\Action;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 
 /**
- * Сервис, позволяющий работать с коллекциями действий бизнес-процессов.
+ * Объект-коллекция действий бизнес-процессов.
  */
 class ActionCollection
 {
@@ -18,22 +18,29 @@ class ActionCollection
     }
 
     /**
-     * Все действия всех бизнес-процессов.
+     * Служебный метод, выполняется во время компиляции, чтобы сгруппировать действия по бизнес-процессам.
      */
-    public function all(): iterable
-    {
-        return $this->allActions;
-    }
-
     final public function addActionToWorkflow(ActionInterface $action, string $workflow): void
     {
         $this->actionsByWorkflow[$workflow][] = $action;
     }
 
     /**
-     * Все действия всех бизнес-процессов, сгруппированные по процессам
+     * Метод получения списка всех действий всех бизнес-процессов.
+     *
+     * @return iterable|ActionInterface[]
      */
-    public function allByWorkflow(string $workflow): array
+    public function all(): iterable
+    {
+        return $this->allActions;
+    }
+
+    /**
+     * Метод получения списка всех действий конкретного бизнес-процесса по его символическому имени.
+     *
+     * @return array|ActionInterface[]
+     */
+    public function findAllByWorkflow(string $workflow): array
     {
         return $this->actionsByWorkflow[$workflow] ?? [];
     }
