@@ -25,7 +25,7 @@ interface WorkflowEntityInterface
      * Может быть строкой или числом.
      * null предусматривается на случай "новой" сущности, еще не получившей идентификатор.
      */
-    public function getEntityId(): int|string|null;
+    public function getEntityId(): int|string|\Stringable|null;
 
     /**
      * Вообще говоря, этот метод не нужен. Но он требуется нам для фикса поведения сущностей Doctrine в отдельных случаях,
@@ -33,7 +33,7 @@ interface WorkflowEntityInterface
      *
      * @return $this
      */
-    public function setEntityId(int|string|null $id): static;
+    public function setEntityId(int|string|\Stringable|null $id): static;
 
     /**
      * Метод, отвечающий на вопрос "Является ли сущность новой"?

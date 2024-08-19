@@ -2,6 +2,7 @@
 
 namespace SprintF\Bundle\Wolfflow\Action;
 
+use SprintF\Bundle\Wolfflow\Actor\ActorInterface;
 use SprintF\Bundle\Wolfflow\Context\ContextInterface;
 use SprintF\Bundle\Wolfflow\Entity\WorkflowEntityInterface;
 use SprintF\Bundle\Wolfflow\Exception\CanNotException;
@@ -43,6 +44,18 @@ interface ActionInterface
      * Контекст данного действия.
      */
     public function getContext(): ContextInterface;
+
+    /**
+     * Актор, то есть тот, кто производит данное действие.
+     * Чаще всего это будет текущий авторизованный пользователь приложения.
+     */
+    public function setActor(?ActorInterface $actor);
+
+    /**
+     * Актор, то есть тот, кто производит данное действие.
+     * Чаще всего это будет текущий авторизованный пользователь приложения.
+     */
+    public function getActor(): ?ActorInterface;
 
     /**
      * Метод, определяющий, может ли быть выполнено данное действие с данной сущностью и в данном контексте.

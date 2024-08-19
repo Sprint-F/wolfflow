@@ -2,6 +2,7 @@
 
 namespace SprintF\Bundle\Wolfflow\Action;
 
+use SprintF\Bundle\Wolfflow\Actor\ActorInterface;
 use SprintF\Bundle\Wolfflow\Attribute\AsAction;
 use SprintF\Bundle\Wolfflow\Context\ContextInterface;
 use SprintF\Bundle\Wolfflow\Entity\WorkflowEntityInterface;
@@ -37,6 +38,12 @@ abstract class ActionAbstract implements ActionInterface
      */
     protected readonly ContextInterface $context;
 
+    /**
+     * Актор, то есть тот, кто производит данное действие.
+     * Чаще всего это будет текущий авторизованный пользователь приложения.
+     */
+    protected readonly ?ActorInterface $actor;
+
     public function getDefaultWorkflowName(): string
     {
         $asActionAttributes = (new \ReflectionClass(static::class))->getAttributes(AsAction::class);
@@ -50,7 +57,6 @@ abstract class ActionAbstract implements ActionInterface
     }
 
     /**
-     * @inheritdoc
      * @throws CanNotException
      */
     public function setEntity(WorkflowEntityInterface $entity): static
@@ -64,17 +70,11 @@ abstract class ActionAbstract implements ActionInterface
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getEntity(): WorkflowEntityInterface
     {
         return $this->entity;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function setContext(ContextInterface $context): static
     {
         $this->context = $context;
@@ -82,17 +82,23 @@ abstract class ActionAbstract implements ActionInterface
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getContext(): ContextInterface
     {
         return $this->context;
     }
 
-    /**
-     * @inheritdoc
-     */
+    public function setActor(?ActorInterface $actor): static
+    {
+        $this->actor = $actor;
+
+        return $this;
+    }
+
+    public function getActor(): ?ActorInterface
+    {
+        return $this->actor ?? null;
+    }
+
     public function can(): bool
     {
         return true;

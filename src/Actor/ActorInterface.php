@@ -8,5 +8,5 @@ namespace SprintF\Bundle\Wolfflow\Actor;
  */
 interface ActorInterface
 {
-    public function getId(): int|string|null;
+    public function getId(): int|string|\Stringable|null;
 }

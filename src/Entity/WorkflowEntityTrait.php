@@ -28,12 +28,12 @@ trait WorkflowEntityTrait // implements WorkflowEntityInterface
         return get_class($this);
     }
 
-    public function getEntityId(): int|string|null
+    public function getEntityId(): int|string|\Stringable|null
     {
         return $this->id;
     }
 
-    public function setEntityId(int|string|null $id): static
+    public function setEntityId(int|string|\Stringable|null $id): static
     {
         $this->id = $id;
 
