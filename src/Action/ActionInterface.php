@@ -30,9 +30,19 @@ interface ActionInterface
     public function setEntity(WorkflowEntityInterface $entity);
 
     /**
+     * Сущность, над которой будет производиться действие.
+     */
+    public function getEntity(): WorkflowEntityInterface;
+
+    /**
      * Контекст данного действия.
      */
     public function setContext(ContextInterface $context);
+
+    /**
+     * Контекст данного действия.
+     */
+    public function getContext(): ContextInterface;
 
     /**
      * Метод, определяющий, может ли быть выполнено данное действие с данной сущностью и в данном контексте.

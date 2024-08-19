@@ -49,6 +49,10 @@ abstract class ActionAbstract implements ActionInterface
         return $this->workflows->findByName($this::getDefaultWorkflowName());
     }
 
+    /**
+     * @inheritdoc
+     * @throws CanNotException
+     */
     public function setEntity(WorkflowEntityInterface $entity): static
     {
         if ($this->getWorkflow() !== $this->workflows->findByEntity($entity)) {
@@ -63,11 +67,27 @@ abstract class ActionAbstract implements ActionInterface
     /**
      * @inheritdoc
      */
+    public function getEntity(): WorkflowEntityInterface
+    {
+        return $this->entity;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function setContext(ContextInterface $context): static
     {
         $this->context = $context;
 
         return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getContext(): ContextInterface
+    {
+        return $this->context;
     }
 
     /**
