@@ -3,6 +3,7 @@
 namespace SprintF\Bundle\Wolfflow\Action;
 
 use SprintF\Bundle\Wolfflow\Actor\ActorInterface;
+use SprintF\Bundle\Wolfflow\Actor\ActorProvider;
 use SprintF\Bundle\Wolfflow\Attribute\AsAction;
 use SprintF\Bundle\Wolfflow\Context\ContextInterface;
 use SprintF\Bundle\Wolfflow\Entity\WorkflowEntityInterface;
@@ -37,6 +38,13 @@ abstract class ActionAbstract implements ActionInterface
      * Контекст действия.
      */
     protected readonly ContextInterface $context;
+
+    /**
+     * Используется в Dependency Injection. Именно поэтому public.
+     * К сожалению, атрибут здесь не несет никакой функции и указан лишь для наглядности...
+     */
+    #[Required]
+    public ActorProvider $actorProvider;
 
     /**
      * Актор, то есть тот, кто производит данное действие.
@@ -96,7 +104,7 @@ abstract class ActionAbstract implements ActionInterface
 
     public function getActor(): ?ActorInterface
     {
-        return $this->actor ?? null;
+        return $this->actor ?? $this->actorProvider->getDefaultActor();
     }
 
     public function can(): bool

@@ -12,5 +12,6 @@ services:
   SprintF\Bundle\Wolfflow\Action\ActionAbstract:
     properties:
       workflows: SprintF\Bundle\Wolfflow\Workflow\WorkflowCollection
+      actorProvider: SprintF\Bundle\Wolfflow\Actor\ActorProvider
 
 parameters:

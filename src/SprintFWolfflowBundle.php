@@ -6,6 +6,7 @@ use SprintF\Bundle\Wolfflow\Action\ActionInterface;
 use SprintF\Bundle\Wolfflow\Attribute\AsAction;
 use SprintF\Bundle\Wolfflow\Attribute\AsWorkflow;
 use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\ActionCollectionPass;
+use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\ActorProviderPass;
 use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\WorkflowCollectionPass;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowInterface;
 use Symfony\Component\DependencyInjection\ChildDefinition;
@@ -24,6 +25,7 @@ class SprintFWolfflowBundle extends AbstractBundle
     {
         $container->addCompilerPass(new WorkflowCollectionPass());
         $container->addCompilerPass(new ActionCollectionPass());
+        $container->addCompilerPass(new ActorProviderPass());
         parent::build($container);
     }
 
