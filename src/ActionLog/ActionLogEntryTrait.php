@@ -131,8 +131,9 @@ trait ActionLogEntryTrait
     /**
      * Пользователь системы, от лица которого производилось действие.
      */
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: '__user_id', referencedColumnName: '__id')]
+//    TODO придется в каждой сущности использующей трейт руками указывать связь
+//    #[ORM\ManyToOne(targetEntity: User::class)]
+//    #[ORM\JoinColumn(name: '__user_id', referencedColumnName: '__id')]
     protected ?UserInterface $user = null;
 
     public function getUser(): ?UserInterface
