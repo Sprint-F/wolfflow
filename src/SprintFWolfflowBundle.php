@@ -2,11 +2,14 @@
 
 namespace SprintF\Bundle\Wolfflow;
 
+use Doctrine\DBAL\Types\Type;
 use SprintF\Bundle\Wolfflow\Action\ActionInterface;
 use SprintF\Bundle\Wolfflow\Attribute\AsAction;
 use SprintF\Bundle\Wolfflow\Attribute\AsWorkflow;
+use SprintF\Bundle\Wolfflow\Dbal\ActionResultType;
 use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\ActionCollectionPass;
 use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\ActorProviderPass;
+use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\DoctrineMappingPass;
 use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\WorkflowCollectionPass;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowInterface;
 use Symfony\Component\DependencyInjection\ChildDefinition;
@@ -26,6 +29,7 @@ class SprintFWolfflowBundle extends AbstractBundle
         $container->addCompilerPass(new WorkflowCollectionPass());
         $container->addCompilerPass(new ActionCollectionPass());
         $container->addCompilerPass(new ActorProviderPass());
+        $container->addCompilerPass(new DoctrineMappingPass());
         parent::build($container);
     }
 
@@ -46,5 +50,17 @@ class SprintFWolfflowBundle extends AbstractBundle
                 $definition->addTag('workflow.action', ['workflow' => $attribute->workflow]);
             }
         });
+    }
+
+    public function boot()
+    {
+        parent::boot();
+
+        Type::addType('action_result', ActionResultType::class);
+
+        $this->container->get('doctrine.dbal.default_connection')
+            ->getDatabasePlatform()
+            ->registerDoctrineTypeMapping('action_result', 'action_result')
+        ;
     }
 }

@@ -11,6 +11,8 @@ class AsWorkflowEntity
     public function __construct(
         /** Символьное имя бизнес-процесса, в котором фигурирует сущность */
         public string $workflow,
+        /** Класс представляющий таблицу логов */
+        public string $logEntryClass,
     ) {
     }
 }
