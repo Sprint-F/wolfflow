@@ -2,7 +2,6 @@
 
 namespace SprintF\Bundle\Wolfflow\DependencyInjection\Compiler;
 
-use SprintF\Bundle\Wolfflow\Dbal\ActionResultType;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -24,14 +23,6 @@ class DoctrineMappingPass implements CompilerPassInterface
                         'is_bundle' => true,
                     ]
                 ]
-            ],
-            'dbal' => [
-                'types' => [
-                    'action_result' => ActionResultType::class,
-                ],
-                'mapping_types' =>[
-                    'action_result' => 'action_result',
-                ],
             ],
         ]);
     }
