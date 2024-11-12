@@ -3,9 +3,9 @@
 namespace SprintF\Bundle\Wolfflow\ActionLog;
 
 use SprintF\Bundle\Wolfflow\Action\ActionResult;
+use SprintF\Bundle\Wolfflow\Actor\ActorInterface;
 use SprintF\Bundle\Wolfflow\Context\ContextInterface;
 use SprintF\Bundle\Wolfflow\Entity\WorkflowEntityInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Интерфейс, задающий требования к объекту, являющемуся записью в логе бизнес-действий.
@@ -49,11 +49,11 @@ interface ActionLogEntryInterface
     public function setContext(?ContextInterface $context): static;
 
     /**
-     * Пользователь системы, от лица которого производилось действие.
+     * Пользователь системы, сервис, процесс от которого производилось действие.
      */
-    public function getUser(): ?UserInterface;
+    public function getActor(): ?ActorInterface;
 
-    public function setUser(UserInterface $user): static;
+    public function setActor(ActorInterface $user): static;
 
     /**
      * Дата и время начала выполнения действия.

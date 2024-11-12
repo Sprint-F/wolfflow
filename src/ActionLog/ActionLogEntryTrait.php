@@ -5,9 +5,9 @@ namespace SprintF\Bundle\Wolfflow\ActionLog;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Mapping as ORM;
 use SprintF\Bundle\Wolfflow\Action\ActionResult;
+use SprintF\Bundle\Wolfflow\Actor\ActorInterface;
 use SprintF\Bundle\Wolfflow\Context\ContextInterface;
 use SprintF\Bundle\Wolfflow\Entity\WorkflowEntityInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
@@ -108,8 +108,6 @@ trait ActionLogEntryTrait
     public function getContext(): ?ContextInterface
     {
         // TODO: Implement getContext() method.
-
-        // TODO может кидать exception если до сюда дошло исполнение?
     }
 
     public function setContext(?ContextInterface $context): static
@@ -131,19 +129,18 @@ trait ActionLogEntryTrait
     /**
      * Пользователь системы, от лица которого производилось действие.
      */
-//    TODO придется в каждой сущности использующей трейт руками указывать связь
-//    #[ORM\ManyToOne(targetEntity: User::class)]
+//    #[ORM\ManyToOne(targetEntity: User::class)] // todo надо убрать потому что класса User не существует
 //    #[ORM\JoinColumn(name: '__user_id', referencedColumnName: '__id')]
-    protected ?UserInterface $user = null;
+    protected ?ActorInterface $actor = null;
 
-    public function getUser(): ?UserInterface
+    public function getActor(): ?ActorInterface
     {
-        return $this->user;
+        return $this->actor;
     }
 
-    public function setUser(?UserInterface $user): static
+    public function setActor(?ActorInterface $actor): static
     {
-        $this->user = $user;
+        $this->actor = $actor;
 
         return $this;
     }
