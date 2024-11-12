@@ -19,6 +19,7 @@
     "homepage": "https://sprintf.ru",
     "require": {
         "php": "^8.1",
+        "doctrine/annotations": "^2.0",
         "doctrine/orm": "^3.3",
         "symfony/dependency-injection": "^7.0",
         "symfony/flex": "*",
