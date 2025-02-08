@@ -9,6 +9,18 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class WorkflowAbstract implements WorkflowInterface
 {
+    final protected static function getDefaultName(): string
+    {
+        $asWorkflowAttributes = (new \ReflectionClass(static::class))->getAttributes(AsWorkflow::class);
+
+        return !empty($asWorkflowAttributes) ? $asWorkflowAttributes[0]->newInstance()->name : throw new NoNeededAttributeException();
+    }
+
+    public static function getName(): string
+    {
+        return static::getDefaultName();
+    }
+
     protected readonly ActionCollection $actions;
 
     // #[Required]
@@ -19,13 +31,6 @@ abstract class WorkflowAbstract implements WorkflowInterface
 
     public function getActions(): array
     {
-        return $this->actions->allByWorkflow(static::getDefaultName());
-    }
-
-    public static function getDefaultName(): string
-    {
-        $asWorkflowAttributes = (new \ReflectionClass(static::class))->getAttributes(AsWorkflow::class);
-
-        return !empty($asWorkflowAttributes) ? $asWorkflowAttributes[0]->newInstance()->name : throw new NoNeededAttributeException();
+        return $this->actions->allByWorkflow(static::getName());
     }
 }

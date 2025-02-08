@@ -3,10 +3,10 @@
 namespace SprintF\Bundle\Wolfflow\Action;
 
 use SprintF\Bundle\Wolfflow\Actor\ActorInterface;
-use SprintF\Bundle\Wolfflow\Actor\ActorProvider;
+use SprintF\Bundle\Wolfflow\Actor\ActorProviderInterface;
 use SprintF\Bundle\Wolfflow\Attribute\AsAction;
 use SprintF\Bundle\Wolfflow\Context\ContextInterface;
-use SprintF\Bundle\Wolfflow\Entity\WorkflowEntityInterface;
+use SprintF\Bundle\Wolfflow\Entity\EntityInterface;
 use SprintF\Bundle\Wolfflow\Exception\CanNotException;
 use SprintF\Bundle\Wolfflow\Exception\NoNeededAttributeException;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowCollection;
@@ -18,7 +18,7 @@ use function Symfony\Component\Translation\t;
 /**
  * Абстрактный класс действия бизнес-процесса.
  *
- * Может использоваться, как базовый класс для действий в приложении, использующем Wolfflow.
+ * Может использоваться, как базовый класс для действий в приложении, использующем WolffloW.
  */
 abstract class ActionAbstract implements ActionInterface
 {
@@ -30,9 +30,9 @@ abstract class ActionAbstract implements ActionInterface
     public WorkflowCollection $workflows;
 
     /**
-     * Сущность, над которой будет производиться дейтсвие.
+     * Сущность, над которой будет производиться действие.
      */
-    protected readonly WorkflowEntityInterface $entity;
+    protected readonly EntityInterface $entity;
 
     /**
      * Контекст действия.
@@ -44,7 +44,7 @@ abstract class ActionAbstract implements ActionInterface
      * К сожалению, атрибут здесь не несет никакой функции и указан лишь для наглядности...
      */
     #[Required]
-    public ActorProvider $actorProvider;
+    public ActorProviderInterface $actorProvider;
 
     /**
      * Актор, то есть тот, кто производит данное действие.
@@ -52,22 +52,27 @@ abstract class ActionAbstract implements ActionInterface
      */
     protected readonly ?ActorInterface $actor;
 
-    public function getDefaultWorkflowName(): string
+    final protected static function getDefaultWorkflowName(): string
     {
         $asActionAttributes = (new \ReflectionClass(static::class))->getAttributes(AsAction::class);
 
         return !empty($asActionAttributes) ? $asActionAttributes[0]->newInstance()->workflow : throw new NoNeededAttributeException();
     }
 
+    public static function getWorkflowName(): string
+    {
+        return static::getDefaultWorkflowName();
+    }
+
     public function getWorkflow(): WorkflowInterface
     {
-        return $this->workflows->findByName($this::getDefaultWorkflowName());
+        return $this->workflows->findByName($this->getWorkflowName());
     }
 
     /**
      * @throws CanNotException
      */
-    public function setEntity(WorkflowEntityInterface $entity): static
+    public function setEntity(EntityInterface $entity): static
     {
         if ($this->getWorkflow() !== $this->workflows->findByEntity($entity)) {
             throw new CanNotException(t('workflow.entity.isnotsameasaction'));
@@ -78,7 +83,7 @@ abstract class ActionAbstract implements ActionInterface
         return $this;
     }
 
-    public function getEntity(): WorkflowEntityInterface
+    public function getEntity(): EntityInterface
     {
         return $this->entity;
     }
@@ -104,7 +109,7 @@ abstract class ActionAbstract implements ActionInterface
 
     public function getActor(): ?ActorInterface
     {
-        return $this->actor ?? $this->actorProvider->getDefaultActor();
+        return $this->actor ?? $this->actorProvider->getActor();
     }
 
     public function can(): bool

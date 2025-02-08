@@ -14,7 +14,7 @@ interface WorkflowInterface
     /**
      * Метод, возвращающий имя этого бизнес-процесса.
      */
-    public static function getDefaultName(): string;
+    public static function getName(): string;
 
     /**
      * Метод для передачи коллекции всех действий.

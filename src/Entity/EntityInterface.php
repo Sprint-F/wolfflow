@@ -7,13 +7,13 @@ namespace SprintF\Bundle\Wolfflow\Entity;
 /**
  * Общий объект для всех сущностей всех бизнес-процессов.
  */
-interface WorkflowEntityInterface
+interface EntityInterface
 {
     /**
-     * Метод, возвращающий символьное имя бизнес-процесса, которому принадлежит данное сущность.
-     * По умолчанию метод должен возвращать значение свойства атрибута WorkflowEntity::workflow.
+     * Метод, возвращающий символьное имя бизнес-процесса, которому принадлежит данная сущность.
+     * По умолчанию метод должен возвращать значение свойства атрибута WorkflowEntity::$workflow.
      */
-    public function getDefaultWorkflowName(): string;
+    public static function getWorkflowName(): string;
 
     /**
      * Имя класса сущности. Почти всегда это будет именно класс в смысле PHP-класса.
@@ -40,4 +40,14 @@ interface WorkflowEntityInterface
      * Новой считаем сущность, которая еще не сохранена в хранилище.
      */
     public function isNew(): bool;
+
+    /**
+     * Имя класса записей в логе действий над данными сущностями.
+     */
+    public static function getLogEntryClass(): string;
+
+    /**
+     * Полный список всех записей лога действий над данной сущностью.
+     */
+    public function getLogEntries(): iterable;
 }

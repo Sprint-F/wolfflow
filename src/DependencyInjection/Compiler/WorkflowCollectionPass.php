@@ -10,8 +10,7 @@ use Symfony\Component\DependencyInjection\Reference;
 class WorkflowCollectionPass implements CompilerPassInterface
 {
     /**
-     * Всё это сделано, чтобы иметь возможность в разных сервисах
-     * получать колллекции бизнес-процессов.
+     * Всё это сделано, чтобы иметь возможность в разных сервисах получать коллекции бизнес-процессов.
      */
     public function process(ContainerBuilder $container): void
     {

@@ -8,14 +8,14 @@ use Symfony\Bundle\SecurityBundle\Security;
  * Провайдер, возвращающий объект стандартного актора действий:
  * по умолчанию это текущий пользователь приложения.
  */
-class ActorProvider
+class DefaultActorProvider implements ActorProviderInterface
 {
     public function __construct(
-        private readonly ?Security $security
+        private readonly ?Security $security,
     ) {
     }
 
-    public function getDefaultActor(): ?ActorInterface
+    public function getActor(): ?ActorInterface
     {
         return $this->security?->getUser();
     }

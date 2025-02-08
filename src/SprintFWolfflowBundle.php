@@ -43,7 +43,7 @@ class SprintFWolfflowBundle extends AbstractBundle
         /* Добавляем тег workflow.action ко всем сервисам, помеченным атрибутом #[AsAction] и реализующим интерфейс ActionInterface */
         $builder->registerAttributeForAutoconfiguration(AsAction::class, static function (ChildDefinition $definition, AsAction $attribute, \ReflectionClass $reflector): void {
             if ($reflector->implementsInterface(ActionInterface::class)) {
-                $definition->addTag('workflow.action', ['workflow' => $attribute->workflow]);
+                $definition->addTag('workflow.action', ['workflow' => $attribute->workflow, 'name' => $attribute->name]);
             }
         });
     }

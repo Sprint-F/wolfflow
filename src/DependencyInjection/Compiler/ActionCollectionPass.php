@@ -10,8 +10,7 @@ use Symfony\Component\DependencyInjection\Reference;
 class ActionCollectionPass implements CompilerPassInterface
 {
     /**
-     * Всё это сделано, чтобы иметь возможность в разных сервисах
-     * получать коллекции действий бизнес-процессов.
+     * Всё это сделано, чтобы иметь возможность в разных сервисах получать коллекции действий бизнес-процессов.
      */
     public function process(ContainerBuilder $container): void
     {

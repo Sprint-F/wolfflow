@@ -4,7 +4,7 @@ namespace SprintF\Bundle\Wolfflow\Action;
 
 use SprintF\Bundle\Wolfflow\Actor\ActorInterface;
 use SprintF\Bundle\Wolfflow\Context\ContextInterface;
-use SprintF\Bundle\Wolfflow\Entity\WorkflowEntityInterface;
+use SprintF\Bundle\Wolfflow\Entity\EntityInterface;
 use SprintF\Bundle\Wolfflow\Exception\CanNotException;
 use SprintF\Bundle\Wolfflow\Exception\FailException;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowInterface;
@@ -16,9 +16,9 @@ interface ActionInterface
 {
     /**
      * Метод, возвращающий имя бизнес-процесса, которому принадлежит данное действие.
-     * По умолчанию метод должен возвращать значение свойства атрибута AsAction::workflow.
+     * По умолчанию метод должен возвращать значение свойства атрибута AsAction::$workflow.
      */
-    public function getDefaultWorkflowName(): string;
+    public static function getWorkflowName(): string;
 
     /**
      * Метод, возвращающий объект бизнес-процесса, которому принадлежит данное действие.
@@ -28,12 +28,12 @@ interface ActionInterface
     /**
      * Сущность, над которой будет производиться действие.
      */
-    public function setEntity(WorkflowEntityInterface $entity);
+    public function setEntity(EntityInterface $entity);
 
     /**
      * Сущность, над которой будет производиться действие.
      */
-    public function getEntity(): WorkflowEntityInterface;
+    public function getEntity(): EntityInterface;
 
     /**
      * Контекст данного действия.

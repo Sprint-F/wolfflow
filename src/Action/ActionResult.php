@@ -3,12 +3,12 @@
 namespace SprintF\Bundle\Wolfflow\Action;
 
 /**
- * Результат выполнения действия бизнес-процесса.
+ * Тип результата выполнения действия бизнес-процесса.
  */
-enum ActionResult
+enum ActionResult: string
 {
-    case CANNOT;
-    case PROGRESS;
-    case SUCCESS;
-    case FAIL;
+    case CANNOT = 'cannot';
+    case PROGRESS = 'progress';
+    case SUCCESS = 'success';
+    case FAIL = 'fail';
 }
