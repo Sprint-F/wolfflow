@@ -31,6 +31,6 @@ abstract class WorkflowAbstract implements WorkflowInterface
 
     public function getActions(): array
     {
-        return $this->actions->allByWorkflow(static::getName());
+        return $this->actions->getAllByWorkflow(static::getName());
     }
 }

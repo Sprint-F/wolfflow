@@ -32,16 +32,18 @@ class ActionCollectionPass implements CompilerPassInterface
          * Работаем с сервисами действий бизнес-процессов.
          * Передаем данные о них в объект-коллекцию действий, указывая, к какому бизнес-процессу относится действие.
          */
-        /** @var array $taggedServices Список всех сервисов с тегом workflow.action - это все действия всех бизнес-процессов */
-        $taggedServices = $container->findTaggedServiceIds('workflow.action');
-
-        $definition = $container->findDefinition(ActionCollection::class);
-        foreach ($taggedServices as $id => $tags) {
+        $actionCollectionDefinition = $container->findDefinition(ActionCollection::class);
+        foreach ($container->findTaggedServiceIds('workflow.action') as $id => $tags) {
             foreach ($tags as $attributes) {
-                $definition->addMethodCall('addActionToWorkflow', [
-                    new Reference($id),
-                    $attributes['workflow'],
-                ]);
+                // Это очень странное место. Возможно в компиляторе Symfony есть ошибки.
+                // Но сюда мы попадали с сервисами, которые не являются нашими действиями.
+                // @todo: разобраться, почему нам тут нужен isset !
+                if (isset($attributes['workflow'])) {
+                    $actionCollectionDefinition->addMethodCall('addActionToWorkflow', [
+                        new Reference($id),
+                        $attributes['workflow'],
+                    ]);
+                }
             }
         }
     }

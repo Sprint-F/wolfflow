@@ -8,7 +8,9 @@ use SprintF\Bundle\Wolfflow\Attribute\AsAction;
 use SprintF\Bundle\Wolfflow\Context\ContextInterface;
 use SprintF\Bundle\Wolfflow\Entity\EntityInterface;
 use SprintF\Bundle\Wolfflow\Exception\CanNotException;
+use SprintF\Bundle\Wolfflow\Exception\FailException;
 use SprintF\Bundle\Wolfflow\Exception\NoNeededAttributeException;
+use SprintF\Bundle\Wolfflow\LogEntry\LogEntryInterface;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowCollection;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowInterface;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -51,6 +53,11 @@ abstract class ActionAbstract implements ActionInterface
      * Чаще всего это будет текущий авторизованный пользователь приложения.
      */
     protected readonly ?ActorInterface $actor;
+
+    /**
+     * Объект записи в логе данного действия.
+     */
+    protected LogEntryInterface $logEntry;
 
     final protected static function getDefaultWorkflowName(): string
     {
@@ -114,6 +121,72 @@ abstract class ActionAbstract implements ActionInterface
 
     public function can(): bool
     {
-        return true;
+        return false;
+    }
+
+    protected function start()
+    {
+        $logEntryClass = $this->getEntity()->getLogEntryClass();
+        /** @var LogEntryInterface $logEntry */
+        $logEntry = new $logEntryClass();
+        $logEntry
+            ->setAction($this)
+            ->setEntity($this->getEntity())
+            ->setContext($this->getContext())
+            ->setActor($this->getActor())
+            ->setStartedAt(new \DateTime('now'))
+            ->setResult(ActionResult::PROGRESS)
+        ;
+
+        $this->insertLogEntry($logEntry);
+        $this->logEntry = $logEntry;
+    }
+
+    public function __invoke(): ActionResult
+    {
+        $this->start();
+
+        try {
+            $can = $this->can();
+            if (!$can) {
+                throw new CanNotException(t('action.cannotcan'));
+            }
+
+            $this->do();
+            $this->success();
+
+            return ActionResult::SUCCESS;
+        } catch (CanNotException $e) {
+            $this->cannot($e);
+            throw $e;
+        } catch (FailException $e) {
+            $this->fail($e);
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->fail($e);
+            throw new FailException(message: $e->getMessage(), previous: $e);
+        }
+    }
+
+    abstract public function do();
+
+    protected function cannot(CanNotException $exception): void
+    {
+        $this->close(ActionResult::CANNOT, trim(get_class($exception).': '.$exception->getMessage(), ':'));
+    }
+
+    protected function success(): void
+    {
+        $this->close(ActionResult::SUCCESS);
+    }
+
+    protected function fail(\Throwable $exception): void
+    {
+        $this->close(ActionResult::FAIL, trim(get_class($exception).': '.$exception->getMessage(), ':'));
+    }
+
+    public function getLogEntry(): LogEntryInterface
+    {
+        return $this->logEntry;
     }
 }

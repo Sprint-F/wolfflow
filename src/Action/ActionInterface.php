@@ -7,6 +7,7 @@ use SprintF\Bundle\Wolfflow\Context\ContextInterface;
 use SprintF\Bundle\Wolfflow\Entity\EntityInterface;
 use SprintF\Bundle\Wolfflow\Exception\CanNotException;
 use SprintF\Bundle\Wolfflow\Exception\FailException;
+use SprintF\Bundle\Wolfflow\LogEntry\LogEntryInterface;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowInterface;
 
 /**
@@ -71,4 +72,9 @@ interface ActionInterface
      * @throws FailException
      */
     public function __invoke(): ActionResult;
+
+    /**
+     * Запись в логе действий, связанная с конкретным исполнением действия.
+     */
+    public function getLogEntry(): LogEntryInterface;
 }

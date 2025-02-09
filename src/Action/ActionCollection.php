@@ -40,7 +40,7 @@ class ActionCollection
      *
      * @return array|ActionInterface[]
      */
-    public function findAllByWorkflow(string $workflow): array
+    public function getAllByWorkflow(string $workflow): array
     {
         return $this->actionsByWorkflow[$workflow] ?? [];
     }
