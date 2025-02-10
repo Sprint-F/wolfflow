@@ -21,39 +21,31 @@ trait LogEntryDoctrineActionTrait
 
     protected function insertLogEntry(LogEntryInterface $logEntry): LogEntryInterface
     {
-        $this->em->persist($logEntry);
-
         $metadata = $this->em->getClassMetadata(get_class($logEntry));
-        $idGenerator = $metadata->idGenerator;
-
         $connection = $this->em->getConnection();
 
-        if (empty($metadata->getIdentifierValues($logEntry))) {
-            if (!$idGenerator->isPostInsertGenerator()) {
-                $generatedIdValue = $idGenerator->generateId($this->em, $logEntry);
-                if (!$idGenerator instanceof AssignedGenerator) {
-                    $convertedIdValue = $connection->convertToPHPValue(
-                        $generatedIdValue,
-                        $metadata->getTypeOfField($metadata->getSingleIdentifierFieldName()),
-                    );
-                    $idValue = [$metadata->getSingleIdentifierFieldName() => $convertedIdValue];
-                    $metadata->setIdentifierValues($logEntry, $idValue);
-                }
-            }
-        }
+        // В этот момент наша сущность получает ID, если у нее pre-insert генерация ID
+        $this->em->persist($logEntry);
+        // И мы убираем ее из UoW, чтобы не сработал лишний INSERT
+        $this->em->detach($logEntry);
 
         $qb = $connection->createQueryBuilder();
         $qb->insert($metadata->getTableName());
 
+        // Если при persist сработал генератор ID, мы получим значение ID и подготовим его к записи в БД
         if (!empty($metadata->getIdentifierValues($logEntry))) {
             $qb->setValue(
                 $metadata->getSingleIdentifierColumnName(),
                 $qb->createNamedParameter(
-                    $metadata->getIdentifierValues($logEntry)[$metadata->getSingleIdentifierFieldName()],
-                    $metadata->getTypeOfField($metadata->getSingleIdentifierFieldName()),
+                    $connection->convertToDatabaseValue(
+                        $metadata->getIdentifierValues($logEntry)[$metadata->getSingleIdentifierFieldName()],
+                        $metadata->getTypeOfField($metadata->getSingleIdentifierFieldName())
+                    ),
                 )
             );
         }
+
+        // Подготовка остальных данных для INSERT
 
         $column = $metadata->getColumnName('actionClass');
         $type = $metadata->getTypeOfField('actionClass');
@@ -83,8 +75,6 @@ trait LogEntryDoctrineActionTrait
                     $type
                 )
             ));
-        } else {
-            $qb->setValue($column, null);
         }
 
         $column = $metadata->getColumnName('contextInDb');
@@ -146,21 +136,16 @@ trait LogEntryDoctrineActionTrait
             )
         ));
 
-        try {
-            $connection->beginTransaction();
-            $qb->executeStatement();
-            $connection->commit();
-        } catch (\Throwable $exception) {
-            $connection->rollBack();
+        // Собственно выполнение INSERT
+        $qb->executeStatement();
 
-            return $logEntry;
-        }
-
+        // В том случае, когда post-insert генерация ID, генератор придется вызвать вручную
+        $idGenerator = $metadata->idGenerator;
         if ($idGenerator->isPostInsertGenerator()) {
-            $idValue = $idGenerator->generateId($this->em, $logEntry);
+            $generatedIdValue = $idGenerator->generateId($this->em, $logEntry);
             if (!$idGenerator instanceof AssignedGenerator) {
                 $convertedIdValue = $connection->convertToPHPValue(
-                    $idValue,
+                    $generatedIdValue,
                     $metadata->getTypeOfField($metadata->getSingleIdentifierFieldName()),
                 );
                 $idValue = [$metadata->getSingleIdentifierFieldName() => $convertedIdValue];
@@ -168,9 +153,17 @@ trait LogEntryDoctrineActionTrait
             }
         }
 
-        $this->em->refresh($logEntry);
+        // А это мы делаем, чтобы избежать повторный insert нашей сущности средствами Entity Manager
+        // или повторный persist с генерацией ID
+        $refreshed = $this->em->find(get_class($logEntry), $metadata->getIdentifierValues($logEntry)[$metadata->getSingleIdentifierFieldName()]);
+        $refreshed
+            ->setAction($logEntry->getAction())
+            ->setEntity($logEntry->getEntity())
+            ->setContext($logEntry->getContext())
+            ->setActor($logEntry->getActor())
+        ;
 
-        return $logEntry;
+        return $refreshed;
     }
 
     protected function updateLogEntry(LogEntryInterface $logEntry): LogEntryInterface
@@ -180,6 +173,8 @@ trait LogEntryDoctrineActionTrait
         $connection = $this->em->getConnection();
         $qb = $connection->createQueryBuilder();
         $qb->update($metadata->getTableName());
+
+        // Подготовка даннных для UPDATE
 
         $qb->where(
             $qb->expr()->eq(
@@ -192,6 +187,18 @@ trait LogEntryDoctrineActionTrait
                 )
             )
         );
+
+        $column = $metadata->getSingleAssociationJoinColumnName('entity');
+        if (!$logEntry->getEntity()->isNew()) {
+            $entityMetadata = $this->em->getClassMetadata(get_class($logEntry->getEntity()));
+            $type = $entityMetadata->getTypeOfField($entityMetadata->getSingleIdentifierFieldName());
+            $qb->set($column, $qb->createNamedParameter(
+                $connection->convertToDatabaseValue(
+                    $logEntry->getEntityId(),
+                    $type
+                )
+            ));
+        }
 
         $column = $metadata->getColumnName('finishedAt');
         $type = $metadata->getTypeOfField('finishedAt');
@@ -220,14 +227,9 @@ trait LogEntryDoctrineActionTrait
             )
         ));
 
-        try {
-            $connection->beginTransaction();
-            $qb->executeStatement();
-            $connection->commit();
-            $this->em->refresh($logEntry);
-        } catch (\Throwable) {
-            $connection->rollBack();
-        }
+        // Собственно выполнение UPDATE
+        $qb->executeStatement();
+        $this->em->refresh($logEntry);
 
         return $logEntry;
     }

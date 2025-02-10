@@ -144,15 +144,13 @@ abstract class ActionAbstract implements ActionInterface
 
     protected function close(ActionResult $result, ?string $reason = null): void
     {
-        /** @var LogEntryInterface $logEntry */
-        $logEntry = $this->logEntry;
-        $logEntry
+        $this->logEntry
             ->setFinishedAt(new \DateTime('now'))
             ->setResult($result)
             ->setReason($reason)
         ;
 
-        $this->logEntry = $this->updateLogEntry($logEntry);
+        $this->logEntry = $this->updateLogEntry($this->logEntry);
     }
 
     public function __invoke(): ActionResult
