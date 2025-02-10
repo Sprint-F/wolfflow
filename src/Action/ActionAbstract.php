@@ -138,8 +138,21 @@ abstract class ActionAbstract implements ActionInterface
             ->setResult(ActionResult::PROGRESS)
         ;
 
-        $this->insertLogEntry($logEntry);
+        $logEntry = $this->insertLogEntry($logEntry);
         $this->logEntry = $logEntry;
+    }
+
+    protected function close(ActionResult $result, ?string $reason = null): void
+    {
+        /** @var LogEntryInterface $logEntry */
+        $logEntry = $this->logEntry;
+        $logEntry
+            ->setFinishedAt(new \DateTime('now'))
+            ->setResult($result)
+            ->setReason($reason)
+        ;
+
+        $this->logEntry = $this->updateLogEntry($logEntry);
     }
 
     public function __invoke(): ActionResult
@@ -149,7 +162,7 @@ abstract class ActionAbstract implements ActionInterface
         try {
             $can = $this->can();
             if (!$can) {
-                throw new CanNotException(t('action.cannotcan'));
+                throw new CanNotException(t('action.cannot'));
             }
 
             $this->do();
@@ -189,4 +202,8 @@ abstract class ActionAbstract implements ActionInterface
     {
         return $this->logEntry;
     }
+
+    abstract protected function insertLogEntry(LogEntryInterface $logEntry);
+
+    abstract protected function updateLogEntry(LogEntryInterface $logEntry);
 }

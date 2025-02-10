@@ -48,6 +48,16 @@ trait LogEntryDoctrineTrait // implements LogEntryInterface
         return $this->entity;
     }
 
+    public function getEntityClass(): string
+    {
+        return $this->entityClass;
+    }
+
+    public function getEntityId(): int|string|\Stringable|null
+    {
+        return $this->getEntity()->getEntityId();
+    }
+
     public function setEntity(EntityInterface $entity): self
     {
         $this->entity = $entity;
@@ -57,6 +67,8 @@ trait LogEntryDoctrineTrait // implements LogEntryInterface
     }
 
     #[ORM\Column(name: 'context', type: 'json', nullable: false, options: ['jsonb' => true])]
+    private array $contextInDb;
+
     private ContextInterface $context;
 
     public function getContext(): ContextInterface
@@ -67,6 +79,7 @@ trait LogEntryDoctrineTrait // implements LogEntryInterface
     public function setContext(ContextInterface $context): self
     {
         $this->context = $context;
+        $this->contextInDb = $context->jsonSerialize();
 
         return $this;
     }

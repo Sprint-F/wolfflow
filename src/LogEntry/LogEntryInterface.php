@@ -18,12 +18,18 @@ interface LogEntryInterface
      */
     public function getAction(): ActionInterface;
 
+    public function getActionClass(): string;
+
     public function setAction(ActionInterface $action);
 
     /**
      * Сущность, над которой производилось действие.
      */
     public function getEntity(): EntityInterface;
+
+    public function getEntityClass(): string;
+
+    public function getEntityId(): int|string|\Stringable|null;
 
     public function setEntity(EntityInterface $entity);
 
