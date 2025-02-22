@@ -1,15 +1,16 @@
 <?php
 
-namespace SprintF\Bundle\Wolfflow\LogEntry;
+namespace SprintF\Bundle\Wolfflow\Action;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Id\AssignedGenerator;
+use SprintF\Bundle\Wolfflow\LogEntry\LogEntryInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * Базовая реализация методов Action::insertLogEntry() и Action::updateLogEntry() для Doctrine.
  */
-trait LogEntryDoctrineActionTrait
+trait ActionLogEntryDoctrineTrait
 {
     protected EntityManagerInterface $em;
 
@@ -92,7 +93,7 @@ trait LogEntryDoctrineActionTrait
             $type = $actorMetadata->getTypeOfField($actorMetadata->getSingleIdentifierFieldName());
             $qb->setValue($column, $qb->createNamedParameter(
                 $connection->convertToDatabaseValue(
-                    $logEntry->getActor()->getId(),
+                    $logEntry->getActor()->getActorId(),
                     $type
                 )
             ));

@@ -1,23 +1,21 @@
 <?php
 
-namespace SprintF\Bundle\Wolfflow\LogEntry;
+namespace SprintF\Bundle\Wolfflow\Action;
+
+use SprintF\Bundle\Wolfflow\LogEntry\LogEntryInterface;
 
 /**
  * Реализация методов Action::insertLogEntry() и Action::updateLogEntry() для тестов.
  */
-trait LogEntryStdoutActionTrait
+trait ActionLogEntryNullTrait
 {
     protected function insertLogEntry(LogEntryInterface $logEntry): LogEntryInterface
     {
-        dump($logEntry);
-
         return $logEntry;
     }
 
     protected function updateLogEntry(LogEntryInterface $logEntry): LogEntryInterface
     {
-        dump($logEntry);
-
         return $logEntry;
     }
 }

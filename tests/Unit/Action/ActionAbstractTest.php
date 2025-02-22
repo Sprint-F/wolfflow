@@ -3,11 +3,10 @@
 namespace SprintF\Bundle\Wolfflow\Tests\Unit\Action;
 
 use SprintF\Bundle\Wolfflow\Action\ActionAbstract;
-use SprintF\Bundle\Wolfflow\Action\ActionResult;
+use SprintF\Bundle\Wolfflow\Action\ActionLogEntryNullTrait;
 use SprintF\Bundle\Wolfflow\Attribute\AsAction;
 use SprintF\Bundle\Wolfflow\Attribute\AsWorkflow;
 use SprintF\Bundle\Wolfflow\Exception\NoNeededAttributeException;
-use SprintF\Bundle\Wolfflow\LogEntry\LogEntryStdoutActionTrait;
 use SprintF\Bundle\Wolfflow\Tests\Support\UnitTester;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowAbstract;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowCollection;
@@ -20,7 +19,8 @@ class TestWorkflowFooInActionAbstractTest extends WorkflowAbstract
 #[AsAction(workflow: 'foo')]
 class TestAction extends ActionAbstract
 {
-    use LogEntryStdoutActionTrait;
+    use ActionLogEntryNullTrait;
+
     public function do()
     {
     }
@@ -47,7 +47,8 @@ class ActionAbstractTest extends \Codeception\Test\Unit
     public function testNoNeededAttribute()
     {
         $action = new class extends ActionAbstract {
-            use LogEntryStdoutActionTrait;
+            use ActionLogEntryNullTrait;
+
             public function do()
             {
             }
