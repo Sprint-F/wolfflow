@@ -24,7 +24,7 @@ abstract class ContextAbstract implements ContextInterface
                 }
             }
             if ($isSensitive) {
-                $value = '***';
+                $value = '●●●';
             }
         }
 
