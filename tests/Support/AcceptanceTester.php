@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Support;
+namespace SprintF\Bundle\Wolfflow\Tests\Support;
 
 /**
  * Inherited Methods.

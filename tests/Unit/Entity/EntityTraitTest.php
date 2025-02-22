@@ -1,15 +1,15 @@
 <?php
 
-namespace Tests\Unit\Entity;
+namespace SprintF\Bundle\Wolfflow\Tests\Unit\Entity;
 
 use SprintF\Bundle\Wolfflow\Attribute\AsEntity;
 use SprintF\Bundle\Wolfflow\Attribute\AsWorkflow;
 use SprintF\Bundle\Wolfflow\Entity\EntityInterface;
 use SprintF\Bundle\Wolfflow\Entity\EntityTrait;
 use SprintF\Bundle\Wolfflow\Exception\NoNeededAttributeException;
+use SprintF\Bundle\Wolfflow\Tests\Support\UnitTester;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowAbstract;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowCollection;
-use Tests\Support\UnitTester;
 
 #[AsWorkflow(name: 'foo')]
 class TestWorkflowFooInEntityTraitTest extends WorkflowAbstract

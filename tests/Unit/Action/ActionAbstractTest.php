@@ -1,15 +1,16 @@
 <?php
 
-namespace Tests\Unit\Action;
+namespace SprintF\Bundle\Wolfflow\Tests\Unit\Action;
 
 use SprintF\Bundle\Wolfflow\Action\ActionAbstract;
 use SprintF\Bundle\Wolfflow\Action\ActionResult;
 use SprintF\Bundle\Wolfflow\Attribute\AsAction;
 use SprintF\Bundle\Wolfflow\Attribute\AsWorkflow;
 use SprintF\Bundle\Wolfflow\Exception\NoNeededAttributeException;
+use SprintF\Bundle\Wolfflow\LogEntry\LogEntryStdoutActionTrait;
+use SprintF\Bundle\Wolfflow\Tests\Support\UnitTester;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowAbstract;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowCollection;
-use Tests\Support\UnitTester;
 
 #[AsWorkflow(name: 'foo')]
 class TestWorkflowFooInActionAbstractTest extends WorkflowAbstract
@@ -19,9 +20,9 @@ class TestWorkflowFooInActionAbstractTest extends WorkflowAbstract
 #[AsAction(workflow: 'foo')]
 class TestAction extends ActionAbstract
 {
-    public function __invoke(): ActionResult
+    use LogEntryStdoutActionTrait;
+    public function do()
     {
-        return ActionResult::SUCCESS;
     }
 }
 class ActionAbstractTest extends \Codeception\Test\Unit
@@ -46,9 +47,9 @@ class ActionAbstractTest extends \Codeception\Test\Unit
     public function testNoNeededAttribute()
     {
         $action = new class extends ActionAbstract {
-            public function __invoke(): ActionResult
+            use LogEntryStdoutActionTrait;
+            public function do()
             {
-                return ActionResult::SUCCESS;
             }
         };
 

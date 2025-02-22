@@ -1,4 +1,4 @@
-namespace: Tests
+namespace: SprintF\Bundle\Wolfflow\Tests
 support_namespace: Support
 paths:
     tests: tests
