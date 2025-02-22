@@ -98,7 +98,7 @@ trait ActionLogEntryDoctrineTrait
                 )
             ));
         } else {
-            $qb->setValue($column, null);
+            $qb->setValue($column, $qb->createNamedParameter(null));
         }
 
         $column = $metadata->getColumnName('startedAt');
