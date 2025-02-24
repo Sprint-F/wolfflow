@@ -3,6 +3,7 @@ Wolfflow Symfony bundle
 
 # Базовые понятия
 
+- [Актор](./docs/concepts/actor.md) 
 - [Исключение](./docs/concepts/exception.md) 
 
 ## Code style fix
