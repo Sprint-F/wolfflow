@@ -1,5 +1,5 @@
 
-Бандл WolffloW включает в себя три базовых типа (класса) исключений:
+Бандл WolffloW включает в себя три базовых типа (класса) **исключений**:
 
 - [NoNeededAttributeException](#NoNeededAttributeException)
 - [CanNotException](#CanNotException)
