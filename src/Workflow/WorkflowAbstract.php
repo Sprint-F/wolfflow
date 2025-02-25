@@ -21,16 +21,19 @@ abstract class WorkflowAbstract implements WorkflowInterface
         return static::getDefaultName();
     }
 
-    protected readonly ActionCollection $actions;
+    protected readonly array $actions;
 
-    // #[Required]
+    /**
+     *  К сожалению, атрибут здесь не несет никакой функции и указан лишь для наглядности...
+     */
+    #[Required]
     public function setActions(ActionCollection $actions): void
     {
-        $this->actions = $actions;
+        $this->actions = $actions->getAllByWorkflow(static::getName());
     }
 
     public function getActions(): array
     {
-        return $this->actions->getAllByWorkflow(static::getName());
+        return $this->actions;
     }
 }

@@ -12,13 +12,13 @@ use SprintF\Bundle\Wolfflow\Action\ActionCollection;
 interface WorkflowInterface
 {
     /**
-     * Метод, возвращающий имя этого бизнес-процесса.
+     * Метод, возвращающий символьное имя данного бизнес-процесса.
      */
     public static function getName(): string;
 
     /**
      * Метод для передачи коллекции всех действий.
-     * Должен выполняться на этапе компиляции.
+     * Используется на этапе компиляции.
      */
     public function setActions(ActionCollection $actions): void;
 
