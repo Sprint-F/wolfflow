@@ -23,7 +23,7 @@
 - <code><b>workflow</b></code> => символьное имя процесса, в который входит данное действие
 - <code><b>name</b></code> => собственное символьное имя действия
 
-# ActionInterface
+## ActionInterface
 
 Общий интерфейс <code><b>SprintF\Bundle\Wolfflow\Action\ActionInterface</b></code> для всех действий 
 всех [бизнес-процессов](./workflow.md). Задает следующие обязательные методы:
