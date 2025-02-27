@@ -13,8 +13,7 @@
 - <code>string <b>$workflow</b></code> Символьное имя бизнес-процесса
 
 Всем сервисам, помеченным данным атрибутом и реализующим интерфейс `WorkflowInterface`, компилятор Symfony добавляет тег
-<code><b>workflow.workflow</b></code>с параметрами:
-
+<code><b>workflow.workflow</b></code> с параметрами:
 - <code><b>name</b></code> => символьное имя данного процесса
 
 ## WorkflowInterface
