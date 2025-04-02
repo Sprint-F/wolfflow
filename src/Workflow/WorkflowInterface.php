@@ -5,6 +5,7 @@ namespace SprintF\Bundle\Wolfflow\Workflow;
 // use SprintF\Bundle\Workflow\ActionLog\ActionLogEntryInterface;
 // use SprintF\Bundle\Workflow\Workflow\WorkflowInterface;
 use SprintF\Bundle\Wolfflow\Action\ActionCollection;
+use SprintF\Bundle\Wolfflow\Status\StatusCollection;
 
 /**
  * Общий интерфейс для всех объектов бизнес-процессов.
@@ -26,4 +27,15 @@ interface WorkflowInterface
      * Все действия данного бизнес-процесса.
      */
     public function getActions(): array;
+
+    /**
+     * Метод для передачи коллекции всех статусов.
+     * Используется на этапе компиляции.
+     */
+    public function setStatuses(StatusCollection $statuses): void;
+
+    /**
+     * Все статусы данного бизнес-процесса.
+     */
+    public function getStatuses(): array;
 }

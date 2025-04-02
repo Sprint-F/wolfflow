@@ -5,6 +5,7 @@ namespace SprintF\Bundle\Wolfflow\Workflow;
 use SprintF\Bundle\Wolfflow\Action\ActionCollection;
 use SprintF\Bundle\Wolfflow\Attribute\AsWorkflow;
 use SprintF\Bundle\Wolfflow\Exception\NoNeededAttributeException;
+use SprintF\Bundle\Wolfflow\Status\StatusCollection;
 use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class WorkflowAbstract implements WorkflowInterface
@@ -35,5 +36,21 @@ abstract class WorkflowAbstract implements WorkflowInterface
     public function getActions(): array
     {
         return $this->actions;
+    }
+
+    protected readonly array $statuses;
+
+    /**
+     *  К сожалению, атрибут здесь не несет никакой функции и указан лишь для наглядности...
+     */
+    #[Required]
+    public function setStatuses(StatusCollection $statuses): void
+    {
+        $this->statuses = $statuses->getAllByWorkflow(static::getName());
+    }
+
+    public function getStatuses(): array
+    {
+        return $this->statuses;
     }
 }
