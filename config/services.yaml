@@ -14,4 +14,8 @@ services:
       workflows: SprintF\Bundle\Wolfflow\Workflow\WorkflowCollection
       actorProvider: SprintF\Bundle\Wolfflow\Actor\DefaultActorProvider
 
+  SprintF\Bundle\Wolfflow\Status\StatusAbstract:
+    properties:
+      workflows: SprintF\Bundle\Wolfflow\Workflow\WorkflowCollection
+
 parameters:

@@ -4,10 +4,12 @@ namespace SprintF\Bundle\Wolfflow;
 
 use SprintF\Bundle\Wolfflow\Action\ActionInterface;
 use SprintF\Bundle\Wolfflow\Attribute\AsAction;
+use SprintF\Bundle\Wolfflow\Attribute\AsStatus;
 use SprintF\Bundle\Wolfflow\Attribute\AsWorkflow;
 use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\ActionCollectionPass;
 use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\ActorProviderPass;
 use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\WorkflowCollectionPass;
+use SprintF\Bundle\Wolfflow\Status\StatusInterface;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowInterface;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -44,6 +46,13 @@ class SprintFWolfflowBundle extends AbstractBundle
         $builder->registerAttributeForAutoconfiguration(AsAction::class, static function (ChildDefinition $definition, AsAction $attribute, \ReflectionClass $reflector): void {
             if ($reflector->implementsInterface(ActionInterface::class)) {
                 $definition->addTag('workflow.action', ['workflow' => $attribute->workflow, 'name' => $attribute->name]);
+            }
+        });
+
+        /* Добавляем тег workflow.status ко всем сервисам, помеченным атрибутом #[AsStatus] и реализующим интерфейс StatusInterface */
+        $builder->registerAttributeForAutoconfiguration(AsStatus::class, static function (ChildDefinition $definition, AsStatus $attribute, \ReflectionClass $reflector): void {
+            if ($reflector->implementsInterface(StatusInterface::class)) {
+                $definition->addTag('workflow.status', ['workflow' => $attribute->workflow, 'name' => $attribute->name]);
             }
         });
     }
