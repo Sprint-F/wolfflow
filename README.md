@@ -18,6 +18,7 @@ Wolfflow - это бандл для фреймворка Symfony, содержа
 - [Сущность](./docs/concepts/entity.md)
 - [Запись в логе действий](./docs/concepts/log-entry.md)
 - [Статус](./docs/concepts/status.md)
+- [Коллекция статусов](./docs/concepts/status-collection.md)
 - [Исключение](./docs/concepts/exception.md) 
 - [Бизнес-процесс](./docs/concepts/workflow.md)
 - [Коллекция бизнес-процессов](./docs/concepts/workflow-collection.md)
