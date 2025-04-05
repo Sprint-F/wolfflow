@@ -1,6 +1,9 @@
-**Статусы (объективные)** - это логические (то есть возвращающие значения `true` или `false`) функции, которые принимают 
+**Статусы** - это логические (то есть возвращающие значения `true` или `false`) функции, которые принимают 
 на вход весь лог действий над какой-либо конкретной [сущностью](./entity.md), и возвращают ответ на вопрос 
 "Находится ли сейчас сущность в некоем интересующем нас состоянии?"
+
+Статусы делятся на "**объективные**", то есть независимые от актора, относительно которого вычисляется статус, 
+и "**субъективные**", то есть статусы, вычисляемые с "точки зрения" какого-либо актора.
 
 Статусы в бандле WolffloW реализованы в виде классов-сервисов, имеющих метод `__invoke()`, собственно и возвращающий
 статус, то есть ответ на вопрос о нахождении или ненахождении в искомом состоянии (см. примеры ниже).
@@ -25,7 +28,7 @@
 Общий интерфейс <code><b>SprintF\Bundle\Wolfflow\Status\StatusInterface</b></code> для всех статусов
 всех [бизнес-процессов](./workflow.md). Задает следующие обязательные методы:
 
-- Методы, возвращаюрщие символьное имя [бизнес-процесса](./workflow.md), которому принадлежит данный статус,
+- Методы, возвращающие символьное имя [бизнес-процесса](./workflow.md), которому принадлежит данный статус,
   и сам объект этого бизнес-процесса:
     - <code><b>getWorkflowName()</b>: string</code>
     - <code><b>getWorkflow()</b>: WorkflowInterface</code>
@@ -36,15 +39,27 @@
     - <code><b>getEntity()</b>: WorkflowEntityInterface</code>
 
 
+- Методы, задающие и возвращающие [актора](./actor.md), относительно которого мы хотим узнать субъективный статус:
+    - <code><b>setActor(</b>?ActorInterface $entity<b>)</b></code>
+    - <code><b>getActor()</b>: ?ActorInterface</code>
+
+
 - Основной метод, метод непосредственно получения статуса.
   Такое имя метода выбрано специально, чтобы не выбирать никакое определенное имя:
     - <code><b>__invoke()</b>: bool</code>
 
 
-Таким образом типовой сценарий получения информации о статусе может выглядеть примерно так:
+Таким образом типовой сценарий получения информации об объективном статусе может выглядеть примерно так:
 ```php
 $isEntityInStatus = ($status
   ->setEntity($entity)
+)();
+```
+а о субъективном статусе - так:
+```php
+$isEntityInStatusForActor = ($status
+  ->setEntity($entity)
+  ->setActor($actor)
 )();
 ```
 
@@ -56,6 +71,7 @@ $isEntityInStatus = ($status
 - Стандартный способ определения символьного имени бизнес-процесса статуса, исходя из атрибута `#[AsStatus]`
 - Методы `getWorkflowName()` и `getWorkflow()`
 - Метод `setEntity()` с проверкой на допустимый тип сущности
+- Метод `setActor()`
 
 Свои классы статусов в приложении можно наследовать от данного абстрактного класса, добавляя к ним лишь
 реализацию метода `__invoke()`:
@@ -82,13 +98,13 @@ class WasSomeActionSuccessStatus extends StatusAbstract
 могут пригодится при разработке статусов с использованием Doctrine.
 
 - Методы, проверяющие, была ли ранее хотя бы одна попытка выполнить интересующее нас действие над заданной сущностью:
-    - <code><b>logContainsActionAttempt(</b>string $actionClass<b>)</b>: bool</code> Была ли хотя бы одна попытка?
-    - <code><b>logContainsActionSuccess(</b>string $actionClass<b>)</b>: bool</code> Была ли хотя бы одна успешная попытка?
-    - <code><b>logContainsActionFail(</b>string $actionClass<b>)</b>: bool</code> Была ли хотя бы одна неуспешная попытка?
+    - <code><b>logContainsActionAttempt(</b>string $actionClass, ?ActorInterface \$actor = null<b>)</b>: bool</code> Была ли хотя бы одна попытка?
+    - <code><b>logContainsActionSuccess(</b>string $actionClass, ?ActorInterface \$actor = null<b>)</b>: bool</code> Была ли хотя бы одна успешная попытка?
+    - <code><b>logContainsActionFail(</b>string $actionClass, ?ActorInterface \$actor = null<b>)</b>: bool</code> Была ли хотя бы одна неуспешная попытка?
 
 
 - Методы, проверяющие, какой была последняя попытка выполнить интересующее нас действие над заданной сущностью:
-    - <code><b>wasLastActionAttemptSuccess(</b>string $actionClass<b>)</b>: bool</code> Была ли последняя попытка успешной?
-    - <code><b>wasLastActionAttemptFail(</b>string $actionClass<b>)</b>: bool</code> Была ли последняя попытка неуспешной?
+    - <code><b>wasLastActionAttemptSuccess(</b>string $actionClass, ?ActorInterface \$actor = null<b>)</b>: bool</code> Была ли последняя попытка успешной?
+    - <code><b>wasLastActionAttemptFail(</b>string $actionClass, ?ActorInterface \$actor = null<b>)</b>: bool</code> Была ли последняя попытка неуспешной?
 
 

@@ -2,6 +2,7 @@
 
 namespace SprintF\Bundle\Wolfflow\Status;
 
+use SprintF\Bundle\Wolfflow\Actor\ActorInterface;
 use SprintF\Bundle\Wolfflow\Entity\EntityInterface;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowInterface;
 
@@ -30,6 +31,16 @@ interface StatusInterface
      * Сущность, статус которой мы хотим определить.
      */
     public function getEntity(): EntityInterface;
+
+    /**
+     * Актор, для которого мы хотим определить субъективный статус.
+     */
+    public function setActor(?ActorInterface $actor);
+
+    /**
+     * Актор, для которого мы хотим определить субъективный статус.
+     */
+    public function getActor(): ?ActorInterface;
 
     /**
      * Непосредственно метод определения статуса.

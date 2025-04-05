@@ -2,6 +2,7 @@
 
 namespace SprintF\Bundle\Wolfflow\Status;
 
+use SprintF\Bundle\Wolfflow\Actor\ActorInterface;
 use SprintF\Bundle\Wolfflow\Attribute\AsStatus;
 use SprintF\Bundle\Wolfflow\Entity\EntityInterface;
 use SprintF\Bundle\Wolfflow\Exception\InvalidWorkflowException;
@@ -27,9 +28,14 @@ abstract class StatusAbstract implements StatusInterface
     public WorkflowCollection $workflows;
 
     /**
-     * Сущность, над которой будет производиться действие.
+     * Сущность, статус которой мы хотим определить.
      */
-    protected readonly EntityInterface $entity;
+    protected EntityInterface $entity;
+
+    /**
+     * Актор, для которого мы хотим определить субъективный статус.
+     */
+    protected ?ActorInterface $actor = null;
 
     final protected static function getDefaultWorkflowName(): string
     {
@@ -62,5 +68,17 @@ abstract class StatusAbstract implements StatusInterface
     public function getEntity(): EntityInterface
     {
         return $this->entity;
+    }
+
+    public function setActor(?ActorInterface $actor): static
+    {
+        $this->actor = $actor;
+
+        return $this;
+    }
+
+    public function getActor(): ?ActorInterface
+    {
+        return $this->actor;
     }
 }

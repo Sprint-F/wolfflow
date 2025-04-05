@@ -4,6 +4,7 @@ namespace SprintF\Bundle\Wolfflow\Status;
 
 use SprintF\Bundle\Wolfflow\Action\ActionInterface;
 use SprintF\Bundle\Wolfflow\Action\ActionResult;
+use SprintF\Bundle\Wolfflow\Actor\ActorInterface;
 use SprintF\Bundle\Wolfflow\LogEntry\LogEntryInterface;
 
 /**
@@ -18,10 +19,14 @@ trait StatusDoctrineTrait
      *
      * @param class-string<ActionInterface> $actionClass
      */
-    protected function logContainsActionAttempt(string $actionClass): bool
+    protected function logContainsActionAttempt(string $actionClass, ?ActorInterface $actor = null): bool
     {
-        return $this->getEntity()->getLogEntries()->exists(function ($key, LogEntryInterface $logEntry) use ($actionClass) {
-            return $actionClass === $logEntry->getActionClass();
+        return $this->getEntity()->getLogEntries()->exists(function ($key, LogEntryInterface $logEntry) use ($actionClass, $actor) {
+            if (null === $actor) {
+                return $actionClass === $logEntry->getActionClass();
+            } else {
+                return $actionClass === $logEntry->getActionClass() && $actor === $logEntry->getActor();
+            }
         });
     }
 
@@ -30,10 +35,14 @@ trait StatusDoctrineTrait
      *
      * @param class-string<ActionInterface> $actionClass
      */
-    protected function logContainsActionSuccess(string $actionClass): bool
+    protected function logContainsActionSuccess(string $actionClass, ?ActorInterface $actor = null): bool
     {
-        return $this->getEntity()->getLogEntries()->exists(function ($key, LogEntryInterface $logEntry) use ($actionClass) {
-            return $actionClass === $logEntry->getActionClass() && ActionResult::SUCCESS === $logEntry->getResult();
+        return $this->getEntity()->getLogEntries()->exists(function ($key, LogEntryInterface $logEntry) use ($actionClass, $actor) {
+            if (null === $actor) {
+                return $actionClass === $logEntry->getActionClass() && ActionResult::SUCCESS === $logEntry->getResult();
+            } else {
+                return $actionClass === $logEntry->getActionClass() && ActionResult::SUCCESS === $logEntry->getResult() && $actor === $logEntry->getActor();
+            }
         });
     }
 
@@ -42,10 +51,14 @@ trait StatusDoctrineTrait
      *
      * @param class-string<ActionInterface> $actionClass
      */
-    protected function logContainsActionFail(string $actionClass): bool
+    protected function logContainsActionFail(string $actionClass, ?ActorInterface $actor = null): bool
     {
-        return $this->getEntity()->getLogEntries()->exists(function ($key, LogEntryInterface $logEntry) use ($actionClass) {
-            return $actionClass === $logEntry->getActionClass() && ActionResult::FAIL === $logEntry->getResult();
+        return $this->getEntity()->getLogEntries()->exists(function ($key, LogEntryInterface $logEntry) use ($actionClass, $actor) {
+            if (null === $actor) {
+                return $actionClass === $logEntry->getActionClass() && ActionResult::FAIL === $logEntry->getResult();
+            } else {
+                return $actionClass === $logEntry->getActionClass() && ActionResult::FAIL === $logEntry->getResult() && $actor === $logEntry->getActor();
+            }
         });
     }
 
@@ -54,10 +67,14 @@ trait StatusDoctrineTrait
      *
      * @param class-string<ActionInterface> $actionClass
      */
-    protected function wasLastActionAttemptSuccess(string $actionClass): bool
+    protected function wasLastActionAttemptSuccess(string $actionClass, ?ActorInterface $actor = null): bool
     {
-        $actionLogEntries = $this->getEntity()->getLogEntries()->filter(function (LogEntryInterface $logEntry) use ($actionClass) {
-            return $actionClass === $logEntry->getActionClass();
+        $actionLogEntries = $this->getEntity()->getLogEntries()->filter(function (LogEntryInterface $logEntry) use ($actionClass, $actor) {
+            if (null === $actor) {
+                return $actionClass === $logEntry->getActionClass();
+            } else {
+                return $actionClass === $logEntry->getActionClass() && $actor === $logEntry->getActor();
+            }
         })->toArray();
         if (empty($actionLogEntries)) {
             return false;
@@ -75,10 +92,14 @@ trait StatusDoctrineTrait
      *
      * @param class-string<ActionInterface> $actionClass
      */
-    protected function wasLastActionAttemptFail(string $actionClass): bool
+    protected function wasLastActionAttemptFail(string $actionClass, ?ActorInterface $actor = null): bool
     {
-        $actionLogEntries = $this->getEntity()->getLogEntries()->filter(function (LogEntryInterface $logEntry) use ($actionClass) {
-            return $actionClass === $logEntry->getActionClass();
+        $actionLogEntries = $this->getEntity()->getLogEntries()->filter(function (LogEntryInterface $logEntry) use ($actionClass, $actor) {
+            if (null === $actor) {
+                return $actionClass === $logEntry->getActionClass();
+            } else {
+                return $actionClass === $logEntry->getActionClass() && $actor === $logEntry->getActor();
+            }
         })->toArray();
         if (empty($actionLogEntries)) {
             return false;
