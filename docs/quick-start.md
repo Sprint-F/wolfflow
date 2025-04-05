@@ -115,7 +115,7 @@ bin/console do:mi:mi
 
 ## Подготовка сущностей
 Возьмите сущность, которая будет участвовать в бизнес-процессе и проведите следующие шаги подготовки:
-1. Добавьте к ней атрибут #[AsEntity],
+1. Добавьте к ней атрибут `#[AsEntity]`,
 2. Добавьте интерфейс `EntityInterface` и его базовую реализацию из трейта `EntityTrait`,
 3. Добавьте связь с `OrderLogEntry`:
 ```php
@@ -150,7 +150,110 @@ class Order implements EntityInterface
 }
 ```
 
+## Разработка процессов, действий, контекстов
 
-- разработка процессов, действий, контекстов
-- применение действий
-- разработка и применение статусов
+Попробуем добавить простейшее действие - отметку о том, что заказ оплачен. Суть действия будет состоять в том, что в поле 
+`paidAt` заказа мы проставим текущее время, а в поле `paidBy` - идентификатор платежной системы.
+
+Начнем с контекста:
+```php
+namespace App\Workflow\Order\Context;
+
+use SprintF\Bundle\Wolfflow\Context\ContextAbstract;
+
+readonly class OrderPayContext extends ContextAbstract
+{
+    public function __construct(
+        public string $paymentProvider,
+    ) {
+    }
+}
+```
+
+Добавляем действие:
+```php
+namespace App\Workflow\Order\Action;
+
+use App\Workflow\Order\Context\OrderPayContext;
+use SprintF\Bundle\Wolfflow\Action\ActionAbstract;
+use SprintF\Bundle\Wolfflow\Action\ActionLogEntryDoctrineTrait;
+
+#[AsAction(workflow: 'order', name: 'order.pay')]
+class OrderPayAction extends ActionAbstract
+{
+    use ActionLogEntryDoctrineTrait;
+    
+    /** @var OrderPayContext */
+    protected readonly ContextInterface $context;
+    
+    public function can(): bool
+    {
+        return true;
+    }
+    
+    public function do() {
+        /** @var \App\Entity\Order */    
+        $entity = $this->getEntity();
+        $entity
+            ->setPaidAt(new \DateTime('now'))
+            ->setPaidBy($this->context->paymentProvider)
+        ;
+        
+        $this->em->persist($entity);
+        $this->em->flush();
+    }
+
+}
+```
+
+Примечания:
+> - В реальном действии в методе `can()` мы бы написали предусловия - то есть условия, когда действие может быть выполнено.
+К примеру, совершенно очевидно, что действие "Оплата" может быть проведено только один раз, это и должно быть записано 
+в методе `can()`
+> - Вместо возврата `false` из метода `can()` рекомендуется выбрасывать исключение, причем тип исключения должен однозначно
+определять причину, почему действие не может быть выполнено.
+> - Если вы передаете в контексте чувствительные данные, к примеру пароль, пометьте соответсвующее свойство атрибутом 
+`#[\SensitiveParameter]`
+
+## Применение действий
+- Действие - это сервис. Получите его с помощью DI.
+- Задайте действию сущность, над которой оно будет выполнено и контекст.
+- Выполните действие.
+- Ловите исключения.
+
+```php
+use SprintF\Bundle\Wolfflow\Exception\CanNotException;
+use SprintF\Bundle\Wolfflow\Exception\FailException;
+
+class PayController
+{
+    public function __construct(
+        private readonly OrderPayAction $orderPayAction  
+    ) {
+    }
+    
+    public function handle() {
+        $order = ...;
+        $paymentProvider = ...;
+        
+        try {
+            $this->orderPayAction
+                ->setEntity($order)
+                ->setContext(new OrderPayContext(
+                    paymentProvider: $paymentProvider
+                ))
+            ;
+        
+            ($this->orderPayAction)();
+        } catch (CanNotException $e) {
+            ...
+        } catch (FailException $e) {
+            ...
+        }
+    }
+}
+```
+Выполнение этого кода запишет в базу данных информацию о попытке выполнения действия, о том, кто его пытался выполнить, 
+о результате или о возможных ошибках в предусловиях или в ходе выполнения действия.
+
+## Разработка и применение статусов
