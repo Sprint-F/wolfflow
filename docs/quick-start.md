@@ -170,7 +170,7 @@ class Order implements EntityInterface
 }
 ```
 
-## Разработка процессов, действий, контекстов
+## Разработка действий, контекстов
 
 Попробуем добавить простейшее действие - отметку о том, что заказ оплачен. Суть действия будет состоять в том, что в поле 
 `paidAt` заказа мы проставим текущее время, а в поле `paidBy` - идентификатор платежной системы.
@@ -197,6 +197,7 @@ namespace App\Workflow\Order\Action;
 use App\Workflow\Order\Context\OrderPayContext;
 use SprintF\Bundle\Wolfflow\Action\ActionAbstract;
 use SprintF\Bundle\Wolfflow\Action\ActionLogEntryDoctrineTrait;
+use SprintF\Bundle\Wolfflow\Attribute\AsAction;
 
 #[AsAction(workflow: 'order', name: 'order.pay')]
 class OrderPayAction extends ActionAbstract
@@ -242,6 +243,7 @@ class OrderPayAction extends ActionAbstract
 - Ловите исключения.
 
 ```php
+use App\Workflow\Order\Action\OrderPayAction;
 use SprintF\Bundle\Wolfflow\Exception\CanNotException;
 use SprintF\Bundle\Wolfflow\Exception\FailException;
 
@@ -277,3 +279,82 @@ class PayController
 о результате или о возможных ошибках в предусловиях или в ходе выполнения действия.
 
 ## Разработка и применение статусов
+
+Предположим, что мы хотим определить статус "Заказ оплачен" следующим образом: в логе действий есть сведения о 
+попытках оплаты и последняя из них успешная.
+
+В таком случае нам достаточно будет написать следующий код:
+
+```php
+namespace App\Workflow\Order\Status;
+
+use App\Workflow\Order\Action\OrderPayAction;
+use SprintF\Bundle\Wolfflow\Attribute\AsStatus;
+use SprintF\Bundle\Wolfflow\Status\StatusAbstract;
+use SprintF\Bundle\Wolfflow\Status\StatusDoctrineTrait;
+
+#[AsStatus(workflow: 'order', name: 'order.is_paid')]
+class OrderIsPaidStatus extends StatusAbstract 
+{
+    use StatusDoctrineTrait;
+    
+    public function __invoke(): bool 
+    {
+        return $this->wasLastActionAttemptSuccess(OrderPayAction::class);
+    }   
+}
+```
+Мы воспользовались методом-хэлпером, который предоставляет трейт `StatusDoctrineTrait`. Однако это не обязательно, 
+вы можете реализовать любую логику статуса самостоятельно, имея в сервисе-статусе доступ к полному логу действий 
+над сущностью.
+
+Учитывая, что каждый статус - это сервис, применение его может выглядеть примерно так:
+
+```php
+use App\Workflow\Order\Status\OrderIsPaidStatus;
+
+class PayController
+{
+    public function __construct(
+        private readonly OrderIsPaidStatus $orderIsPaidStatus  
+    ) {
+    }
+    
+    public function handle() {
+        $order = ...;
+        
+        $this->orderIsPaidStatus
+            ->setEntity($order)
+        ;
+    
+        $status = ($this->orderIsPaidStatus)();
+        if ($status) {
+            ...
+        }
+    }
+}
+```
+
+
+## Разработка и применение процессов
+Процессы, как коллекции сгруппированных по назначению действий и статусов, в данный момент, скорее представляются
+заделом на будущее, нежели реально полезными конструкциями. Они созданы для использования совместно с админ-панелью, 
+однако их необходимо добавлять и в те приложения, что не используют админ-панель, иначе вы получите ошибки.
+
+Создание класса процесса предельно просто:
+
+```php
+namespace App\Workflow\Order;
+
+use SprintF\Bundle\Wolfflow\Attribute\AsWorkflow;
+use SprintF\Bundle\Wolfflow\Workflow\WorkflowAbstract;
+
+#[AsWorkflow(name: 'order')]
+class OrderWorkflow extends WorkflowAbstract
+{
+}
+```
+Добавьте по одному классу процесса на каждое имя процесса, упомянутое вами в атрибутах `#[AsEntity]`, `#[AsAction]` 
+и `#[AsStatus]`.
+
+Этого вполне достаточно для завершения установки и настройки WolffloW.
