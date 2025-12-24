@@ -34,12 +34,12 @@ abstract class ActionAbstract implements ActionInterface
     /**
      * Сущность, над которой будет производиться действие.
      */
-    protected readonly EntityInterface $entity;
+    protected EntityInterface $entity;
 
     /**
      * Контекст действия.
      */
-    protected readonly ContextInterface $context;
+    protected ContextInterface $context;
 
     /**
      * Используется в Dependency Injection. Именно поэтому public.
@@ -52,7 +52,7 @@ abstract class ActionAbstract implements ActionInterface
      * Актор, то есть тот, кто производит данное действие.
      * Чаще всего это будет текущий авторизованный пользователь приложения.
      */
-    protected readonly ?ActorInterface $actor;
+    protected ?ActorInterface $actor;
 
     /**
      * Объект записи в логе данного действия.
