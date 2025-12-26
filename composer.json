@@ -23,11 +23,11 @@
     "homepage": "https://sprintf.ru",
     "require": {
         "php": "^8.2",
-        "symfony/dependency-injection": "^7.0",
+        "symfony/dependency-injection": "^7.0 || ^8.0",
         "symfony/flex": "*",
-        "symfony/http-kernel": "^7.0",
+        "symfony/http-kernel": "7.0 || ^8.0",
         "symfony/service-contracts": "*",
-        "symfony/translation": "^7.0"
+        "symfony/translation": "7.0 || ^8.0"
     },
     "require-dev": {
         "codeception/codeception": "^5.1",
