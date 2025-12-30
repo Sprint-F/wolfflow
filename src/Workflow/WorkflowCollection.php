@@ -3,7 +3,7 @@
 namespace SprintF\Bundle\Wolfflow\Workflow;
 
 use SprintF\Bundle\Wolfflow\Entity\EntityInterface;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 /**
  * Объект-коллекция бизнес-процессов.
@@ -13,7 +13,7 @@ class WorkflowCollection
     private array $workflowsByName = [];
 
     public function __construct(
-        #[TaggedIterator('workflow.workflow')]
+        #[AutowireIterator('workflow.workflow')]
         private readonly iterable $allWorkflows,
     ) {
     }

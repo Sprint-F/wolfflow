@@ -2,7 +2,7 @@
 
 namespace SprintF\Bundle\Wolfflow\Action;
 
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 /**
  * Объект-коллекция действий бизнес-процессов.
@@ -12,7 +12,7 @@ class ActionCollection
     private array $actionsByWorkflow = [];
 
     public function __construct(
-        #[TaggedIterator('workflow.action')]
+        #[AutowireIterator('workflow.action')]
         private readonly iterable $allActions,
     ) {
     }

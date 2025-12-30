@@ -2,7 +2,7 @@
 
 namespace SprintF\Bundle\Wolfflow\Status;
 
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 /**
  * Объект-коллекция статусов бизнес-процессов.
@@ -12,7 +12,7 @@ class StatusCollection
     private array $statusesByWorkflow = [];
 
     public function __construct(
-        #[TaggedIterator('workflow.status')]
+        #[AutowireIterator('workflow.status')]
         private readonly iterable $allStatuses,
     ) {
     }
