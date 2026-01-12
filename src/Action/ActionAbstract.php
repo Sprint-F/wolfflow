@@ -59,11 +59,17 @@ abstract class ActionAbstract implements ActionInterface
      */
     protected LogEntryInterface $logEntry;
 
-    protected TranslatorInterface $translator;
+    /**
+     * Переводчик
+     */
+    #[Required]
+    public TranslatorInterface $translator;
 
-    public function setTranslator(TranslatorInterface $translator): void
+    public function setTranslator(TranslatorInterface $translator): static
     {
         $this->translator = $translator;
+
+        return $this;
     }
 
     final protected static function getDefaultWorkflowName(): string
@@ -89,7 +95,7 @@ abstract class ActionAbstract implements ActionInterface
     public function setEntity(EntityInterface $entity): static
     {
         if ($this->getWorkflow() !== $this->workflows->findByEntity($entity)) {
-            throw new CanNotException(t('workflow.entity.isnotsameasaction'));
+            throw new CanNotException($this->translator->trans('workflow.entity.isnotsameasaction'));
         }
 
         $this->entity = $entity;

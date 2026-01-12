@@ -10,6 +10,7 @@ use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\ActionCollectionPass;
 use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\ActionPass;
 use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\ActorProviderPass;
 use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\StatusCollectionPass;
+use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\StatusPass;
 use SprintF\Bundle\Wolfflow\DependencyInjection\Compiler\WorkflowCollectionPass;
 use SprintF\Bundle\Wolfflow\Status\StatusInterface;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowInterface;
@@ -32,6 +33,7 @@ class SprintFWolfflowBundle extends AbstractBundle
         $container->addCompilerPass(new StatusCollectionPass());
         $container->addCompilerPass(new ActorProviderPass());
         $container->addCompilerPass(new ActionPass());
+        $container->addCompilerPass(new StatusPass());
         parent::build($container);
     }
 
