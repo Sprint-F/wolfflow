@@ -14,8 +14,8 @@ use SprintF\Bundle\Wolfflow\LogEntry\LogEntryInterface;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowCollection;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowInterface;
 use Symfony\Contracts\Service\Attribute\Required;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-use function Symfony\Component\Translation\t;
 
 /**
  * Абстрактный класс действия бизнес-процесса.
@@ -58,6 +58,13 @@ abstract class ActionAbstract implements ActionInterface
      * Объект записи в логе данного действия.
      */
     protected LogEntryInterface $logEntry;
+
+    protected TranslatorInterface $translator;
+
+    public function setTranslator(TranslatorInterface $translator): void
+    {
+        $this->translator = $translator;
+    }
 
     final protected static function getDefaultWorkflowName(): string
     {
@@ -160,7 +167,7 @@ abstract class ActionAbstract implements ActionInterface
         try {
             $can = $this->can();
             if (!$can) {
-                throw new CanNotException(t('action.cannot'));
+                throw new CanNotException($this->translator->trans('action.cannot'));
             }
 
             $this->do();
