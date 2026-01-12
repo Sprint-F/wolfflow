@@ -65,13 +65,6 @@ abstract class ActionAbstract implements ActionInterface
     #[Required]
     public TranslatorInterface $translator;
 
-    public function setTranslator(TranslatorInterface $translator): static
-    {
-        $this->translator = $translator;
-
-        return $this;
-    }
-
     final protected static function getDefaultWorkflowName(): string
     {
         $asActionAttributes = (new \ReflectionClass(static::class))->getAttributes(AsAction::class);

@@ -42,13 +42,6 @@ abstract class StatusAbstract implements StatusInterface
     #[Required]
     public TranslatorInterface $translator;
 
-    public function setTranslator(TranslatorInterface $translator): static
-    {
-        $this->translator = $translator;
-
-        return $this;
-    }
-
     final protected static function getDefaultWorkflowName(): string
     {
         $asStatusAttributes = (new \ReflectionClass(static::class))->getAttributes(AsStatus::class);
