@@ -16,7 +16,6 @@ use SprintF\Bundle\Wolfflow\Workflow\WorkflowInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-
 /**
  * Абстрактный класс действия бизнес-процесса.
  *
@@ -60,7 +59,7 @@ abstract class ActionAbstract implements ActionInterface
     protected LogEntryInterface $logEntry;
 
     /**
-     * Переводчик
+     * Переводчик.
      */
     protected TranslatorInterface $translator;
 

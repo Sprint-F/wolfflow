@@ -37,7 +37,7 @@ abstract class StatusAbstract implements StatusInterface
     protected ?ActorInterface $actor = null;
 
     /**
-     * Переводчик
+     * Переводчик.
      */
     protected TranslatorInterface $translator;
 
