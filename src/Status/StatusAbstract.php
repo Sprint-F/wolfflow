@@ -39,8 +39,13 @@ abstract class StatusAbstract implements StatusInterface
     /**
      * Переводчик
      */
+    protected TranslatorInterface $translator;
+
     #[Required]
-    public TranslatorInterface $translator;
+    public function setTranslator(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
 
     final protected static function getDefaultWorkflowName(): string
     {
