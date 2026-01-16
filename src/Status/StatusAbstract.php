@@ -10,8 +10,7 @@ use SprintF\Bundle\Wolfflow\Exception\NoNeededAttributeException;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowCollection;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowInterface;
 use Symfony\Contracts\Service\Attribute\Required;
-
-use function Symfony\Component\Translation\t;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Абстрактный класс статуса сущности.
@@ -37,6 +36,17 @@ abstract class StatusAbstract implements StatusInterface
      */
     protected ?ActorInterface $actor = null;
 
+    /**
+     * Переводчик.
+     */
+    protected TranslatorInterface $translator;
+
+    #[Required]
+    public function setTranslator(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     final protected static function getDefaultWorkflowName(): string
     {
         $asStatusAttributes = (new \ReflectionClass(static::class))->getAttributes(AsStatus::class);
@@ -57,7 +67,7 @@ abstract class StatusAbstract implements StatusInterface
     public function setEntity(EntityInterface $entity): static
     {
         if ($this->getWorkflow() !== $this->workflows->findByEntity($entity)) {
-            throw new InvalidWorkflowException(t('workflow.entity.isnotsameasaction'));
+            throw new InvalidWorkflowException($this->translator->trans('workflow.entity.isnotsameasaction'));
         }
 
         $this->entity = $entity;

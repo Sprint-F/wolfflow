@@ -6,6 +6,10 @@
                 <source>workflow.entity.isnotsameasaction</source>
                 <target>Бизнес-процесс сущности не совпадает с бизнес-процессом действия</target>
             </trans-unit>
+            <trans-unit id="action.cannot">
+                <source>action.cannot</source>
+                <target>Невозможно выполнить действие</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

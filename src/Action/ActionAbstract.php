@@ -14,8 +14,7 @@ use SprintF\Bundle\Wolfflow\LogEntry\LogEntryInterface;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowCollection;
 use SprintF\Bundle\Wolfflow\Workflow\WorkflowInterface;
 use Symfony\Contracts\Service\Attribute\Required;
-
-use function Symfony\Component\Translation\t;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Абстрактный класс действия бизнес-процесса.
@@ -59,6 +58,17 @@ abstract class ActionAbstract implements ActionInterface
      */
     protected LogEntryInterface $logEntry;
 
+    /**
+     * Переводчик.
+     */
+    protected TranslatorInterface $translator;
+
+    #[Required]
+    public function setTranslator(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     final protected static function getDefaultWorkflowName(): string
     {
         $asActionAttributes = (new \ReflectionClass(static::class))->getAttributes(AsAction::class);
@@ -82,7 +92,7 @@ abstract class ActionAbstract implements ActionInterface
     public function setEntity(EntityInterface $entity): static
     {
         if ($this->getWorkflow() !== $this->workflows->findByEntity($entity)) {
-            throw new CanNotException(t('workflow.entity.isnotsameasaction'));
+            throw new CanNotException($this->translator->trans('workflow.entity.isnotsameasaction'));
         }
 
         $this->entity = $entity;
@@ -160,7 +170,7 @@ abstract class ActionAbstract implements ActionInterface
         try {
             $can = $this->can();
             if (!$can) {
-                throw new CanNotException(t('action.cannot'));
+                throw new CanNotException($this->translator->trans('action.cannot'));
             }
 
             $this->do();
