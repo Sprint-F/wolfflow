@@ -23,6 +23,12 @@ interface StatusInterface
     public function getWorkflow(): WorkflowInterface;
 
     /**
+     * Метод, возвращающий собственное символьное имя данного статуса.
+     * По умолчанию метод должен возвращать значение свойства атрибута AsStatus::$name
+     */
+    public static function getName(): ?string;
+
+    /**
      * Сущность, статус которой мы хотим определить.
      */
     public function setEntity(EntityInterface $entity);

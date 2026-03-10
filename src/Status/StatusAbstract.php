@@ -47,11 +47,26 @@ abstract class StatusAbstract implements StatusInterface
         $this->translator = $translator;
     }
 
+    final protected static function getMetaData(): array
+    {
+        static $attributes = [];
+        $attributes[static::class] ??= (new \ReflectionClass(static::class))->getAttributes(AsStatus::class);
+
+        return $attributes[static::class];
+    }
+
     final protected static function getDefaultWorkflowName(): string
     {
-        $asStatusAttributes = (new \ReflectionClass(static::class))->getAttributes(AsStatus::class);
+        $asStatusAttributes = static::getMetaData();
 
         return !empty($asStatusAttributes) ? $asStatusAttributes[0]->newInstance()->workflow : throw new NoNeededAttributeException();
+    }
+
+    final protected static function getDefaultName(): ?string
+    {
+        $asStatusAttributes = static::getMetaData();
+
+        return !empty($asStatusAttributes) ? $asStatusAttributes[0]->newInstance()->name : throw new NoNeededAttributeException();
     }
 
     public static function getWorkflowName(): string
@@ -62,6 +77,11 @@ abstract class StatusAbstract implements StatusInterface
     public function getWorkflow(): WorkflowInterface
     {
         return $this->workflows->findByName($this->getWorkflowName());
+    }
+
+    public static function getName(): ?string
+    {
+        return static::getDefaultName();
     }
 
     public function setEntity(EntityInterface $entity): static
