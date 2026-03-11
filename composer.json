@@ -25,9 +25,9 @@
         "php": "^8.2",
         "symfony/dependency-injection": "^7.1 || ^8.0",
         "symfony/flex": "*",
-        "symfony/http-kernel": "7.1 || ^8.0",
+        "symfony/http-kernel": "^7.1 || ^8.0",
         "symfony/service-contracts": "*",
-        "symfony/translation": "7.1 || ^8.0"
+        "symfony/translation": "^7.1 || ^8.0"
     },
     "require-dev": {
         "codeception/codeception": "^5.1",
