@@ -4,6 +4,7 @@ namespace SprintF\Bundle\Wolfflow\Action;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Id\AssignedGenerator;
+use Doctrine\Persistence\ManagerRegistry;
 use SprintF\Bundle\Wolfflow\LogEntry\LogEntryInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -18,6 +19,14 @@ trait ActionLogEntryDoctrineTrait
     public function setEntityManager(EntityManagerInterface $em)
     {
         $this->em = $em;
+    }
+
+    protected ManagerRegistry $doctrine;
+
+    #[Required]
+    public function setManagerRegistry(ManagerRegistry $doctrine)
+    {
+        $this->doctrine = $doctrine;
     }
 
     protected function insertLogEntry(LogEntryInterface $logEntry): LogEntryInterface
@@ -192,13 +201,35 @@ trait ActionLogEntryDoctrineTrait
         $column = $metadata->getSingleAssociationJoinColumnName('entity');
         if (!$logEntry->getEntity()->isNew()) {
             $entityMetadata = $this->em->getClassMetadata(get_class($logEntry->getEntity()));
+
+            $entityTableName = $entityMetadata->getTableName();
+            $entityIdFieldName = $metadata->getSingleAssociationReferencedJoinColumnName('entity');
             $type = $entityMetadata->getTypeOfField($entityMetadata->getSingleIdentifierFieldName());
-            $qb->set($column, $qb->createNamedParameter(
-                $connection->convertToDatabaseValue(
-                    $logEntry->getEntityId(),
-                    $type
+
+            $checkIfEntityExists = $connection->createQueryBuilder();
+            $checkIfEntityExists
+                ->select('count(*)')
+                ->from($entityTableName)
+                ->where($entityIdFieldName.'=:id')
+                ->createNamedParameter(
+                    $connection->convertToDatabaseValue(
+                        $logEntry->getEntityId(),
+                        $type,
+                    ),
+                    placeHolder: ':id'
                 )
-            ));
+            ;
+            $result = $checkIfEntityExists->executeQuery()->fetchOne();
+
+            if (1 === $result) {
+                $type = $entityMetadata->getTypeOfField($entityMetadata->getSingleIdentifierFieldName());
+                $qb->set($column, $qb->createNamedParameter(
+                    $connection->convertToDatabaseValue(
+                        $logEntry->getEntityId(),
+                        $type
+                    )
+                ));
+            }
         }
 
         $column = $metadata->getColumnName('finishedAt');
@@ -230,6 +261,13 @@ trait ActionLogEntryDoctrineTrait
 
         // Собственно выполнение UPDATE
         $qb->executeStatement();
+
+        // Переоткрытие EM, если он закрылся от ошибки Doctrine
+        if (!$this->em->isOpen()) {
+            $this->em = $this->doctrine->resetManager();
+            $this->em->persist($logEntry);
+        }
+
         $this->em->refresh($logEntry);
 
         return $logEntry;
