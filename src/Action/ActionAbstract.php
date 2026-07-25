@@ -163,8 +163,16 @@ abstract class ActionAbstract implements ActionInterface
         $this->logEntry = $this->updateLogEntry($this->logEntry);
     }
 
-    public function __invoke(): ActionResult
+    public function __invoke(?EntityInterface $entity = null, ?ContextInterface $context = null): ActionResult
     {
+        if (null !== $entity) {
+            $this->setEntity($entity);
+        }
+
+        if (null !== $context) {
+            $this->setContext($context);
+        }
+
         $this->start();
 
         try {

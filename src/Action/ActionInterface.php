@@ -71,7 +71,7 @@ interface ActionInterface
      * @throws CanNotException
      * @throws FailException
      */
-    public function __invoke(): ActionResult;
+    public function __invoke(?EntityInterface $entity = null, ?ContextInterface $context = null): ActionResult;
 
     /**
      * Запись в логе действий, связанная с конкретным исполнением действия.
