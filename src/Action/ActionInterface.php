@@ -27,6 +27,11 @@ interface ActionInterface
     public function getWorkflow(): WorkflowInterface;
 
     /**
+     * Метод, возвращающий собственное символьное имя действия.
+     */
+    public function getName(): string;
+
+    /**
      * Сущность, над которой будет производиться действие.
      */
     public function setEntity(EntityInterface $entity);

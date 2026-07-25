@@ -20,6 +20,8 @@ interface LogEntryInterface
 
     public function getActionClass(): string;
 
+    public function getActionName(): string;
+
     public function setAction(ActionInterface $action);
 
     /**

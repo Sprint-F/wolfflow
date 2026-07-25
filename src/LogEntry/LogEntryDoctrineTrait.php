@@ -22,6 +22,9 @@ trait LogEntryDoctrineTrait // implements LogEntryInterface
     #[ORM\Column(name: 'action_class', type: 'string', length: 160, nullable: false)]
     private string $actionClass;
 
+    #[ORM\Column(name: 'action_name', type: 'string', length: 300, nullable: false)]
+    private string $actionName;
+
     public function getAction(): ActionInterface
     {
         return $this->action;
@@ -32,10 +35,16 @@ trait LogEntryDoctrineTrait // implements LogEntryInterface
         return $this->actionClass;
     }
 
+    public function getActionName(): string
+    {
+        return $this->actionName;
+    }
+
     public function setAction(ActionInterface $action): self
     {
         $this->action = $action;
         $this->actionClass = get_class($action);
+        $this->actionName = $action->getName();
 
         return $this;
     }

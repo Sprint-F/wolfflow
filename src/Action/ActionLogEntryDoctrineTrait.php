@@ -66,6 +66,15 @@ trait ActionLogEntryDoctrineTrait
             )
         ));
 
+        $column = $metadata->getColumnName('actionName');
+        $type = $metadata->getTypeOfField('actionName');
+        $qb->setValue($column, $qb->createNamedParameter(
+            $connection->convertToDatabaseValue(
+                $logEntry->getActionName(),
+                $type
+            )
+        ));
+
         $column = $metadata->getColumnName('entityClass');
         $type = $metadata->getTypeOfField('entityClass');
         $qb->setValue($column, $qb->createNamedParameter(

@@ -86,6 +86,13 @@ abstract class ActionAbstract implements ActionInterface
         return $this->workflows->findByName($this->getWorkflowName());
     }
 
+    public function getName(): string
+    {
+        $asActionAttributes = (new \ReflectionClass(static::class))->getAttributes(AsAction::class);
+
+        return !empty($asActionAttributes) ? $asActionAttributes[0]->newInstance()->name : throw new NoNeededAttributeException();
+    }
+
     /**
      * @throws CanNotException
      */

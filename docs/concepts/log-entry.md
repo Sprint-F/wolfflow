@@ -23,6 +23,7 @@
 - Методы, задающие и возвращающие выполняемое [действие](./action.md):
   - <code><b>getAction()</b>: ActionInterface</code>
   - <code><b>getActionClass()</b>: string</code>
+  - <code><b>getActionName()</b>: string</code>
   - <code><b>setAction(</b>ActionInterface $action<b>)</b></code>
 
 

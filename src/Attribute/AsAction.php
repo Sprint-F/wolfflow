@@ -13,7 +13,7 @@ class AsAction
         public string $workflow,
 
         /** Собственное символьное имя действия */
-        public ?string $name = null,
+        public string $name,
     ) {
     }
 }
